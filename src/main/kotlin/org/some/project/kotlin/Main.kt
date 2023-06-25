@@ -1,15 +1,25 @@
 package org.some.project.kotlin
 
-import kotlin.random.Random
+import org.some.project.kotlin.chars.Crusader
+import org.some.project.kotlin.chars.DungeonCharacter
+import org.some.project.kotlin.chars.Highwayman
+import org.some.project.kotlin.chars.Vestal
 
 fun main() {
     println("Hello World!")
 
-    val random = Random.Default
-    repeat(20) {
-        val t = random.nextInt(1,50)
-        val exp = Experience.create()
-        val gainedExp = exp.gainExp(t)
-        println("Earned $t, got $gainedExp")
+    val crusader = DungeonCharacter(Crusader, "Reynauld")
+    val hwm = DungeonCharacter(Highwayman, "Dismas")
+    val vestal = DungeonCharacter(Vestal, "Junia")
+    listOf(crusader, hwm, vestal).forEach {
+        println(it.description)
+        it.takeDamage(20)
+        println(it.description)
+        it.gainExp(5)
+        println(it.description)
+        it.takeDamage(10)
+        println(it.description)
+        it.gainExp(3)
+        println(it.description)
     }
 }
