@@ -12,7 +12,8 @@ fun main() {
     val hwm = DungeonCharacter(Highwayman, "Dismas")
     val vestal = DungeonCharacter(Vestal, "Junia")
     listOf(crusader, hwm, vestal).forEach {
-        println(it.description)
+        print("${it.description}. ")
+        println(it.charClass.listOfAbilities)
         it.takeDamage(20)
         println(it.description)
         it.gainExp(5)

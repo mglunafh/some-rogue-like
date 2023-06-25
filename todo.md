@@ -8,12 +8,8 @@
 
 3: Create classes for Map: Room, Corridor
 
-2: Create basic classes: Experience(level: Int, exp: Int);
-    interface CharacterClass, class Character;
-    some characters (Crusader, Highwayman);
-    interface Ability;
-    some abilities (Smite, Crushing Blow, Duelist Advance, Point-black Shot);
-
 =========
 
-1: Create Kotlin project
+2: Create **Experience**, **CharacterClass** and some implementations, **DungeonCharacter**,
+    **Ability** and some implementations.
+1: Create Kotlin project.
