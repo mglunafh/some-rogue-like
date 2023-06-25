@@ -1,15 +1,15 @@
-# TODO LIST
+# TO-DO list
 
-6: create the system of commands
+* create some monsters
+* create fight system, adjust abilities
+* create the system of game scenes (e.g. Roster, DungeonMenu, Dungeon, Fight)
+* create the system of commands
+* create basic game event loop
+* Create classes for random events in a corridor and a room: bag, bookshelf, trap, enemies
+* Create classes for Map: Room, Corridor
 
-5: create basic game event loop
+# Implemented 
 
-4: Create classes for random events in a corridor and a room: bag, bookshelf, trap, enemies
-
-3: Create classes for Map: Room, Corridor
-
-=========
-
-2: Create **Experience**, **CharacterClass** and some implementations, **DungeonCharacter**,
+* RGL-2 Created **Experience**, **CharacterClass** and some implementations, **DungeonCharacter**,
     **Ability** and some implementations.
-1: Create Kotlin project.
+* RGL-1 Create Kotlin project.
