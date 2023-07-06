@@ -7,8 +7,10 @@ class HeroCharacter(
     val name: String,
     exp: Experience,
     hp: Int,
+    override val turns: Int,
+    override val speed: Int,
     isAlive: Boolean
-): DungeonCharacter(charClass, hp, isAlive) {
+): DungeonCharacter(charClass, hp, isAlive), HasTurns {
 
     constructor(charClass: HeroClass, name: String, isAlive: Boolean = true) :
             this(
@@ -16,6 +18,8 @@ class HeroCharacter(
                 name = name,
                 exp = Experience.create(),
                 hp = charClass.baseHp,
+                turns = charClass.turns,
+                speed = charClass.speed,
                 isAlive = isAlive
             )
 

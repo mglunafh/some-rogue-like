@@ -7,6 +7,8 @@ open class EnemyClass(
     final override val baseHp: Int,
     final override val minDamage: Int,
     final override val maxDamage: Int,
+    final override val turns: Int = 1,
+    final override val speed: Int,
     final override val abilities: Array<Ability>
 ) : DungeonClass
 
@@ -15,6 +17,7 @@ object Brigand : EnemyClass(
     baseHp = 20,
     minDamage = 5,
     maxDamage = 10,
+    speed = 4,
     abilities = arrayOf(Slice, Shank)
 ) {
 
@@ -29,6 +32,7 @@ object BoneSoldier : EnemyClass(
     baseHp = 10,
     minDamage = 3,
     maxDamage = 8,
+    speed = 4,
     abilities = arrayOf(GraveyardSlash, GraveyardStumble)
 ) {
 
@@ -43,6 +47,7 @@ object Spider : EnemyClass(
     baseHp = 8,
     minDamage = 3,
     maxDamage = 6,
+    speed = 5,
     abilities = arrayOf(Spit, Bite)
 ) {
 

@@ -8,6 +8,8 @@ interface DungeonClass {
     val baseHp: Int
     val minDamage: Int
     val maxDamage: Int
+    val turns: Int
+    val speed: Int
     val abilities: Array<Ability>
 
     val listOfAbilities: String

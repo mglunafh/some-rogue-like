@@ -1,7 +1,7 @@
 # TO-DO list
 
 * create graveyard :-O
-* create the system of game scenes (e.g. Roster, DungeonMenu, Dungeon, Fight)
+* create the system of game scenes (e.g. Roster, DungeonMenu, Dungeon, Skirmish)
 * create the system of commands
 * create basic game event loop
 * create classes for random events in a corridor and a room: bag, bookshelf, trap, enemies
@@ -10,11 +10,12 @@
 ----
 # In Progress
 
-* RGL-4 create party, fight system, adjust abilities
+* RGS-5 Create game loop for skirmish
 
 ----
 # Implemented 
 
+* RGL-4 create party, adjust abilities
 * RGL-3 Created some monsters
 * RGL-2 Created **Experience**, **CharacterClass** and some implementations, **DungeonCharacter**,
     **Ability** and some implementations.
