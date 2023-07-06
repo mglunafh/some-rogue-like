@@ -10,7 +10,7 @@
 ----
 # In Progress
 
-* RGS-5 Create game loop for skirmish
+* RGL-5 Create game loop for skirmish, take input from the player
 
 ----
 # Implemented 

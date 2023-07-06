@@ -9,6 +9,7 @@ import org.some.project.kotlin.chars.BoneSoldier
 import org.some.project.kotlin.chars.Brigand
 import org.some.project.kotlin.chars.Party
 import org.some.project.kotlin.chars.Spider
+import org.some.project.kotlin.scenes.Skirmish
 
 fun main() {
     println("Hello World!")
@@ -45,6 +46,6 @@ fun main() {
     val heroParty = Party(crusader, hwm, vestal)
     val enemyParty = Party(brigand, boneSoldier, spider)
 
-    val battlefield = "${heroParty.descriptionRightFirst()} --x-- ${enemyParty.descriptionLeftFirst()}"
-    println(battlefield)
+    val skirmish = Skirmish(heroParty, enemyParty)
+    skirmish.run()
 }
