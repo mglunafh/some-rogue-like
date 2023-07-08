@@ -1,6 +1,5 @@
 # TO-DO list
 
-* create graveyard :-O
 * create the system of game scenes (e.g. Roster, DungeonMenu, Dungeon, Skirmish)
 * create the system of commands
 * create basic game event loop
