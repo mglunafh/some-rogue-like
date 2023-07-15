@@ -1,11 +1,12 @@
 package org.some.project.kotlin.chars
 
+import org.some.project.kotlin.GLOBAL_PARTY_SIZE
 import org.some.project.kotlin.abilities.Position
 
 class Party<T : DungeonCharacter> private constructor(characterList: List<T>) {
 
     companion object {
-        const val PARTY_SIZE = 4
+        const val PARTY_SIZE = GLOBAL_PARTY_SIZE
     }
 
     private val characters: MutableList<T?>
@@ -29,6 +30,18 @@ class Party<T : DungeonCharacter> private constructor(characterList: List<T>) {
         return characters[pos.pos]
     }
 
+    fun isPresentOn(pos: Position): Boolean {
+        return characters[pos.pos] != null
+    }
+
+    fun isPresentOnAny(positions: List<Position>): Boolean {
+        return positions.any { characters[it.pos] != null }
+    }
+
+    fun isPresentOnAll(positions: List<Position>): Boolean {
+        return positions.all { characters[it.pos] != null }
+    }
+
     fun getCharacters(): List<T?> {
         return characters.toList()
     }
@@ -38,11 +51,15 @@ class Party<T : DungeonCharacter> private constructor(characterList: List<T>) {
 
     // is it possible to implement destructuring here ?
 
-    fun descriptionRightFirst(): String {
-        return characters.reversed().mapIndexed { i, it -> it?.let {"${it.charClass.name} (${characters.size - i})"} ?: "" }.joinToString()
+    fun descriptionBacklineFirst(): String {
+        return characters.reversed()
+            .mapIndexed { i, it -> "${it?.charClass?.name} (${characters.size - i})" }
+            .joinToString()
     }
 
-    fun descriptionLeftFirst(): String {
-        return characters.mapIndexed { i, it -> it?.let { "${it.charClass.name} (${i + 1})" } ?: "" }. joinToString()
+    fun descriptionFrontlineFirst(): String {
+        return characters
+            .filterNotNull()
+            .mapIndexed { i, it ->  "${it.charClass.name} (${i + 1})" }. joinToString()
     }
 }

@@ -1,6 +1,11 @@
 package org.some.project.kotlin.chars
 
 import org.some.project.kotlin.abilities.Ability
+import org.some.project.kotlin.abilities.Position.Companion.ALL_FOUR
+import org.some.project.kotlin.abilities.Position.Companion.ONE
+import org.some.project.kotlin.abilities.Position.Companion.THREE
+import org.some.project.kotlin.abilities.Position.Companion.ZERO
+import org.some.project.kotlin.scenes.Skirmish
 
 open class EnemyClass(
     final override val name: String,
@@ -9,7 +14,7 @@ open class EnemyClass(
     final override val maxDamage: Int,
     final override val turns: Int = 1,
     final override val speed: Int,
-    final override val abilities: Array<Ability>
+    final override val abilities: List<Ability>
 ) : DungeonClass
 
 object Brigand : EnemyClass(
@@ -18,13 +23,20 @@ object Brigand : EnemyClass(
     minDamage = 5,
     maxDamage = 10,
     speed = 4,
-    abilities = arrayOf(Slice, Shank)
+    abilities = listOf(Slice, Shank)
 ) {
 
-    object Slice : Ability("Slice")
+    object Slice : Ability("Slice") {
+        override fun isApplicable(skirmish: Skirmish): Boolean {
+            return skirmish.heroParty.isPresentOnAny(listOf(ZERO, ONE))
+        }
+    }
 
-    object Shank : Ability("Shank")
-
+    object Shank : Ability("Shank") {
+        override fun isApplicable(skirmish: Skirmish): Boolean {
+            return skirmish.heroParty.isPresentOnAny(listOf(ZERO, ONE))
+        }
+    }
 }
 
 object BoneSoldier : EnemyClass(
@@ -33,13 +45,20 @@ object BoneSoldier : EnemyClass(
     minDamage = 3,
     maxDamage = 8,
     speed = 4,
-    abilities = arrayOf(GraveyardSlash, GraveyardStumble)
+    abilities = listOf(GraveyardSlash, GraveyardStumble)
 ) {
 
-    object GraveyardSlash : Ability("Graveyard Slash")
+    object GraveyardSlash : Ability("Graveyard Slash") {
+        override fun isApplicable(skirmish: Skirmish): Boolean {
+            return isPresentOnPositions(skirmish.heroParty, listOf(ZERO, ONE, THREE))
+        }
+    }
 
-    object GraveyardStumble : Ability("Graveyard Stumble")
-
+    object GraveyardStumble : Ability("Graveyard Stumble") {
+        override fun isApplicable(skirmish: Skirmish): Boolean {
+            return isPresentOnPositions(skirmish.heroParty, listOf(ZERO, ONE, THREE))
+        }
+    }
 }
 
 object Spider : EnemyClass(
@@ -48,11 +67,15 @@ object Spider : EnemyClass(
     minDamage = 3,
     maxDamage = 6,
     speed = 5,
-    abilities = arrayOf(Spit, Bite)
+    abilities = listOf(Spit, Bite)
 ) {
 
-    object Spit : Ability("Spit")
+    object Spit : Ability("Spit") {
+        override fun isApplicable(skirmish: Skirmish): Boolean = isPresentOnPositions(skirmish.heroParty, ALL_FOUR)
 
-    object Bite : Ability("Bite")
+    }
 
+    object Bite : Ability("Bite") {
+        override fun isApplicable(skirmish: Skirmish): Boolean = isPresentOnPositions(skirmish.heroParty, ALL_FOUR)
+    }
 }

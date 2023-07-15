@@ -5,6 +5,9 @@ import org.some.project.kotlin.abilities.AbilityEffect
 import org.some.project.kotlin.abilities.AllOf
 import org.some.project.kotlin.abilities.AnyOf
 import org.some.project.kotlin.abilities.Damage
+import org.some.project.kotlin.abilities.Healing
+import org.some.project.kotlin.abilities.Position.Companion.ZERO
+import org.some.project.kotlin.scenes.Skirmish
 
 open class HeroClass(
     final override val name: String,
@@ -13,7 +16,7 @@ open class HeroClass(
     final override val maxDamage: Int,
     final override val turns: Int = 1,
     final override val speed: Int,
-    final override val abilities: Array<Ability>
+    final override val abilities: List<Ability>
 ) : DungeonClass {
 
     init {
@@ -31,19 +34,31 @@ object Crusader : HeroClass(
     minDamage = 5,
     maxDamage = 10,
     speed = 3,
-    abilities = arrayOf(Smite, CrushingBlow, ShowThemTheBills)
+    abilities = listOf(Smite, CrushingBlow, ShowThemTheBills)
 ) {
 
     object Smite : Ability("Smite") {
-        val effect = AbilityEffect(effect = Damage(8), appliedTo =  AnyOf.FIRST_TWO, appliedFrom = AnyOf.FIRST_TWO)
+        val effect = AbilityEffect(effect = Damage(8), appliedTo = AnyOf.FRONT_TWO, appliedFrom = AnyOf.FRONT_TWO)
+
+        override fun isApplicable(skirmish: Skirmish): Boolean {
+            return isPresentOnPositions(skirmish.enemyParty, effect.appliedTo.positions)
+        }
     }
 
     object CrushingBlow : Ability("Crushing Blow") {
-        val effect = AbilityEffect(effect = Damage(4), appliedTo = AnyOf.FIRST_TWO, appliedFrom = AnyOf.FIRST_TWO)
+        val effect = AbilityEffect(effect = Damage(4), appliedTo = AnyOf.FRONT_TWO, appliedFrom = AnyOf.FRONT_TWO)
+
+        override fun isApplicable(skirmish: Skirmish): Boolean {
+            return isPresentOnPositions(skirmish.enemyParty, effect.appliedTo)
+        }
     }
 
-    object ShowThemTheBills: Ability("Show Them the Bills") {
-        val effect = AbilityEffect(effect = Damage(3), appliedTo = AllOf.FIRST_TWO, appliedFrom = AnyOf.FIRST_TWO)
+    object ShowThemTheBills : Ability("Show Them the Bills") {
+        val effect = AbilityEffect(effect = Damage(3), appliedTo = AllOf.FRONT_TWO, appliedFrom = AnyOf.FRONT_TWO)
+
+        override fun isApplicable(skirmish: Skirmish): Boolean {
+            return isPresentOnPositions(skirmish.enemyParty, effect.appliedTo)
+        }
     }
 }
 
@@ -53,13 +68,28 @@ object Highwayman : HeroClass(
     minDamage = 8,
     maxDamage = 15,
     speed = 5,
-    abilities = arrayOf(DuelistAdvance, PointBlackShot)
+    abilities = listOf(DuelistAdvance, PointBlackShot)
 ) {
 
-    object DuelistAdvance: Ability("Duelist Advance")
+    object DuelistAdvance : Ability("Duelist Advance") {
+        // TODO: move forward
+        // TODO: riposte
+        val effect = AbilityEffect(effect = Damage(3), appliedTo = AnyOf.FRONT_THREE, appliedFrom = AnyOf.FRONT_THREE)
 
-    object PointBlackShot: Ability("Point-Blank Shot")
+        override fun isApplicable(skirmish: Skirmish): Boolean {
+            return isPresentOnPositions(skirmish.enemyParty, effect.appliedTo)
+        }
+    }
 
+    object PointBlackShot : Ability("Point-Blank Shot") {
+
+        // TODO: move back
+        val effect = AbilityEffect(effect = Damage(10), appliedTo = AnyOf(ZERO), appliedFrom = AnyOf(ZERO))
+
+        override fun isApplicable(skirmish: Skirmish): Boolean {
+            return isPresentOnPositions(skirmish.enemyParty, effect.appliedTo)
+        }
+    }
 }
 
 object Vestal : HeroClass(
@@ -68,13 +98,24 @@ object Vestal : HeroClass(
     minDamage = 3,
     maxDamage = 8,
     speed = 4,
-    abilities = arrayOf(MaceBash, DivineGrace)
+    abilities = listOf(MaceBash, DivineGrace, DivineComfort)
 ) {
 
-    object DivineComfort: Ability("Divine Comfort")
+    object DivineComfort : Ability("Divine Comfort") {
+        val effect = AbilityEffect(effect = Healing(10), appliedTo = AnyOf.ALL_FOUR, appliedFrom = AnyOf.BACKLINE_TWO)
+        override fun isApplicable(skirmish: Skirmish): Boolean = true
+    }
 
-    object DivineGrace: Ability("Divine Grace")
+    object DivineGrace : Ability("Divine Grace") {
+        val effect = AbilityEffect(effect = Healing(4), appliedTo = AllOf.ALL_FOUR, appliedFrom = AnyOf.BACKLINE_THREE)
+        override fun isApplicable(skirmish: Skirmish): Boolean = true
+    }
 
-    object MaceBash: Ability("Mace Bash")
+    object MaceBash : Ability("Mace Bash") {
+        val effect = AbilityEffect(effect = Damage(4), appliedTo = AnyOf.FRONT_TWO, appliedFrom = AnyOf.FRONT_TWO)
 
+        override fun isApplicable(skirmish: Skirmish): Boolean {
+            return isPresentOnPositions(skirmish.enemyParty, effect.appliedTo)
+        }
+    }
 }

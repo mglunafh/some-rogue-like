@@ -1,5 +1,7 @@
 package org.some.project.kotlin.chars
 
+import org.some.project.kotlin.abilities.Ability
+
 open class DungeonCharacter(
     val charClass: DungeonClass,
     hp: Int,
@@ -11,6 +13,8 @@ open class DungeonCharacter(
 
     var isAlive: Boolean = isAlive
         private set
+
+    val abilities: List<Ability> by charClass
 
     open val description: String
         get() = "${charClass.name}, ${currentHp}hp, ${if (isAlive) "alive" else "dead"}"
@@ -26,5 +30,4 @@ open class DungeonCharacter(
             currentHp -= damagePoints
         }
     }
-
 }

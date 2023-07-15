@@ -10,8 +10,8 @@ import java.util.LinkedList
 import java.util.Queue
 
 class Skirmish(
-    private val heroParty: Party<HeroCharacter>,
-    private val enemyParty: Party<EnemyCharacter>
+    val heroParty: Party<HeroCharacter>,
+    val enemyParty: Party<EnemyCharacter>
 ) {
 
     var round: Int = 1
@@ -19,7 +19,7 @@ class Skirmish(
 
     var sequenceOfTurns: Queue<Triple<Int, DungeonCharacter, ControlType>>
         private set
-    lateinit var currentCharacter: Triple<Int, DungeonCharacter, ControlType>
+    lateinit var curCharTuple: Triple<Int, DungeonCharacter, ControlType>
         private set
 
     init {
@@ -47,7 +47,7 @@ class Skirmish(
 
     val battlefield: String
         get() {
-            return "${heroParty.descriptionRightFirst()} --x-- ${enemyParty.descriptionLeftFirst()}"
+            return "${heroParty.descriptionBacklineFirst()} --x-- ${enemyParty.descriptionFrontlineFirst()}"
         }
 
     private fun atStart() {
@@ -63,12 +63,17 @@ class Skirmish(
         println(battlefield)
         println("Round $round")
         do {
-            currentCharacter = sequenceOfTurns.poll()
-            val control = when (currentCharacter.third) {
+            curCharTuple = sequenceOfTurns.poll()
+            val curChar = curCharTuple.second
+            val controlType = curCharTuple.third
+            val control = when (controlType) {
                 ControlType.ComputerControl -> "(by computer)"
-                ControlType.PlayerControl -> "(by player)"
+                ControlType.PlayerControl   -> "(by player)"
             }
-            println("${currentCharacter.second.charClass.name} turn (SPD ${currentCharacter.first}) $control:")
+            print("(SPD ${curCharTuple.first}) ${curCharTuple.second.charClass.name} turn $control: ")
+            val ability = controlType.getAbility(this, curChar)
+
+            println(ability.name)
 
         } while (sequenceOfTurns.isNotEmpty())
     }

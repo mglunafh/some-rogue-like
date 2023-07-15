@@ -11,7 +11,7 @@ data class Experience(val level: Int, val exp: Int = 0) {
     }
 
     companion object {
-        private const val MAX_LEVEL = 6
+        private const val MAX_LEVEL = GLOBAL_MAX_LEVEL
         private val EXP_TO_LEVEL_UP = List(MAX_LEVEL) { ind -> ind to 2 * (ind + 1) }.toMap()
         fun create() = Experience(0, 0)
     }
