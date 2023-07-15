@@ -6,6 +6,7 @@
 ----
 # In Progress
 
+* RGL-6 document requirements for the console command system
 * RGL-5 In skirmish, take input from the player
 
 ----
