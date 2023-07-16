@@ -70,10 +70,10 @@ class Skirmish(
                 ControlType.ComputerControl -> "(by computer)"
                 ControlType.PlayerControl   -> "(by player)"
             }
-            print("(SPD ${curCharTuple.first}) ${curCharTuple.second.charClass.name} turn $control: ")
+            print("(SPD ${curCharTuple.first}) ${curCharTuple.second.charClass.fancyName} turn $control: ")
             val ability = controlType.getAbility(this, curChar)
 
-            println(ability.name)
+            println(ability.fancyName)
 
         } while (sequenceOfTurns.isNotEmpty())
     }

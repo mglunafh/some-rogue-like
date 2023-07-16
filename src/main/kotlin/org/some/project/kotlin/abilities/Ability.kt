@@ -1,5 +1,6 @@
 package org.some.project.kotlin.abilities
 
+import org.some.project.kotlin.FancyName
 import org.some.project.kotlin.abilities.Position.Companion.ONE
 import org.some.project.kotlin.abilities.Position.Companion.THREE
 import org.some.project.kotlin.abilities.Position.Companion.TWO
@@ -8,9 +9,11 @@ import org.some.project.kotlin.chars.DungeonCharacter
 import org.some.project.kotlin.chars.Party
 import org.some.project.kotlin.scenes.Skirmish
 
-abstract class Ability(val name: String) {
+abstract class Ability(val name: String): FancyName {
 
     abstract fun isApplicable(skirmish: Skirmish): Boolean
+
+    override val fancyName = "\u001b[34;1m${name}\u001b[0m"
 
     fun <T: DungeonCharacter> isPresentOnPositions(party: Party<T>, positions: List<Position>): Boolean {
         return party.isPresentOnAny(positions)
@@ -24,7 +27,7 @@ abstract class Ability(val name: String) {
     }
 }
 
-object PassTurn : Ability("Pass") {
+object PassTurn: Ability("Pass") {
 
     override fun isApplicable(skirmish: Skirmish): Boolean = true
 

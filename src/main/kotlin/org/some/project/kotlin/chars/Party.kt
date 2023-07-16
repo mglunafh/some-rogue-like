@@ -53,13 +53,13 @@ class Party<T : DungeonCharacter> private constructor(characterList: List<T>) {
 
     fun descriptionBacklineFirst(): String {
         return characters.reversed()
-            .mapIndexed { i, it -> "${it?.charClass?.name} (${characters.size - i})" }
+            .mapIndexed { i, it -> "${it?.charClass?.fancyName} (${characters.size - i})" }
             .joinToString()
     }
 
     fun descriptionFrontlineFirst(): String {
         return characters
             .filterNotNull()
-            .mapIndexed { i, it ->  "${it.charClass.name} (${i + 1})" }. joinToString()
+            .mapIndexed { i, it ->  "${it.charClass.fancyName} (${i + 1})" }. joinToString()
     }
 }

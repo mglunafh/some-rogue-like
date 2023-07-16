@@ -1,6 +1,7 @@
 package org.some.project.kotlin.chars
 
 import org.some.project.kotlin.Experience
+import org.some.project.kotlin.FancyName
 
 class HeroCharacter(
     charClass: HeroClass,
@@ -10,7 +11,7 @@ class HeroCharacter(
     override val turns: Int,
     override val speed: Int,
     isAlive: Boolean
-): DungeonCharacter(charClass, hp, isAlive), HasTurns {
+): DungeonCharacter(charClass, hp, isAlive), HasTurns, FancyName {
 
     constructor(charClass: HeroClass, name: String, isAlive: Boolean = true) :
             this(
@@ -26,8 +27,11 @@ class HeroCharacter(
     var experience: Experience = exp
         private set
 
+    override val fancyName: String
+        get() = "\u001b[4m$name\u001b[0m"
+
     override val description: String
-        get() = "${charClass.name} $name, ${experience.description}, ${currentHp}hp, ${if (isAlive) "alive" else "dead"}"
+        get() = "${charClass.fancyName} $fancyName, ${experience.description}, ${currentHp}hp, ${if (isAlive) "alive" else "dead"}"
 
     fun gainExp(xp: Int) {
         if (!isAlive) {

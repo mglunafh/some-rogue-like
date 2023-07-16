@@ -13,7 +13,7 @@ sealed class ControlType {
         override fun getAbility(skirmish: Skirmish, character: DungeonCharacter): Ability {
             val applicableAbilities = character.abilities.filter { it.isApplicable(skirmish) }
             return if (applicableAbilities.isNotEmpty()) {
-                print("can use any of ${applicableAbilities.joinToString { it.name }}. ")
+                print("can use any of ${applicableAbilities.joinToString { it.fancyName }}. ")
                 applicableAbilities.random()
             } else {
                 print("cannot use anything. ")
@@ -26,7 +26,7 @@ sealed class ControlType {
         override fun getAbility(skirmish: Skirmish, character: DungeonCharacter): Ability {
             val applicableAbilities = character.abilities.filter { it.isApplicable(skirmish) }
             return if (applicableAbilities.isNotEmpty()) {
-                print("can use any of ${applicableAbilities.joinToString { it.name }}. ")
+                print("can use any of ${applicableAbilities.joinToString { it.fancyName }}. ")
                 applicableAbilities.random()
             } else {
                 print("cannot use anything. ")

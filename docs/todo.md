@@ -1,17 +1,18 @@
 # TO-DO list
 
 * create the system of commands
-* add some colors to the output system. Abstract out the console output (View)
 
 ----
 # In Progress
 
-* RGL-6 document requirements for the console command system
+* RGL-7 Abstract out the console output (View)
 * RGL-5 In skirmish, take input from the player
 
 ----
 # Implemented 
 
+* RGL-7 added basic colors to the console output
+* RGL-6 documented the requirements for the console command system
 * RGL-5 Created a game loop for skirmish
 * RGL-4 create party, adjust abilities
 * RGL-3 Created some monsters
