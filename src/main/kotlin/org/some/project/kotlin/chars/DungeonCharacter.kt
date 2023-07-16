@@ -1,12 +1,13 @@
 package org.some.project.kotlin.chars
 
+import org.some.project.kotlin.FancyName
 import org.some.project.kotlin.abilities.Ability
 
 open class DungeonCharacter(
     val charClass: DungeonClass,
     hp: Int,
     isAlive: Boolean
-) {
+): FancyName {
 
     var currentHp: Int = hp
         private set
@@ -17,7 +18,7 @@ open class DungeonCharacter(
     val abilities: List<Ability> by charClass
 
     open val description: String
-        get() = "${charClass.name}, ${currentHp}hp, ${if (isAlive) "alive" else "dead"}"
+        get() = "${charClass.fancyName}, ${currentHp}hp, ${if (isAlive) "alive" else "dead"}"
 
     fun takeDamage(damagePoints: Int) {
         require(damagePoints >= 0) {
@@ -30,4 +31,8 @@ open class DungeonCharacter(
             currentHp -= damagePoints
         }
     }
+
+    override val fancyName: String
+        get() = this.charClass.fancyName
+
 }

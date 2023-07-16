@@ -1,11 +1,13 @@
 package org.some.project.kotlin.scenes
 
-import org.some.project.kotlin.ControlType
+import org.some.project.kotlin.control.ControlType
 import org.some.project.kotlin.chars.DungeonCharacter
 import org.some.project.kotlin.chars.EnemyCharacter
 import org.some.project.kotlin.chars.HasTurns
 import org.some.project.kotlin.chars.HeroCharacter
 import org.some.project.kotlin.chars.Party
+import org.some.project.kotlin.control.ComputerControl
+import org.some.project.kotlin.control.PlayerControl
 import java.util.LinkedList
 import java.util.Queue
 
@@ -28,12 +30,12 @@ class Skirmish(
         var tempCollection = mutableListOf<Triple<Int, DungeonCharacter, ControlType>>()
         heroParty.getCharacters().forEach {
             it?.let {
-                tempCollection.add(Triple(it.speed, it, ControlType.PlayerControl))
+                tempCollection.add(Triple(it.speed, it, PlayerControl))
             }
         }
         enemyParty.getCharacters().forEach {
             it?.let {
-                tempCollection.add(Triple(it.speed, it, ControlType.ComputerControl))
+                tempCollection.add(Triple(it.speed, it, ComputerControl))
             }
         }
         tempCollection = tempCollection
@@ -67,10 +69,10 @@ class Skirmish(
             val curChar = curCharTuple.second
             val controlType = curCharTuple.third
             val control = when (controlType) {
-                ControlType.ComputerControl -> "(by computer)"
-                ControlType.PlayerControl   -> "(by player)"
+                ComputerControl -> "(by computer)"
+                PlayerControl   -> "(by player)"
             }
-            print("(SPD ${curCharTuple.first}) ${curCharTuple.second.charClass.fancyName} turn $control: ")
+            print("(SPD ${curCharTuple.first}) ${curCharTuple.second.fancyName} turn $control: ")
             val ability = controlType.getAbility(this, curChar)
 
             println(ability.fancyName)

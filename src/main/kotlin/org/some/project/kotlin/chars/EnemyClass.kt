@@ -15,9 +15,14 @@ open class EnemyClass(
     final override val turns: Int = 1,
     final override val speed: Int,
     final override val abilities: List<Ability>
-) : DungeonClass
+): DungeonClass {
 
-object Brigand : EnemyClass(
+    override val abilitiesLookUp: Map<String, Ability> by lazy {
+        abilities.associateBy { it.commandName }
+    }
+}
+
+object Brigand: EnemyClass(
     name = "Brigand",
     baseHp = 20,
     minDamage = 5,
@@ -26,20 +31,24 @@ object Brigand : EnemyClass(
     abilities = listOf(Slice, Shank)
 ) {
 
-    object Slice : Ability("Slice") {
+    object Slice: Ability("Slice", 1) {
         override fun isApplicable(skirmish: Skirmish): Boolean {
             return skirmish.heroParty.isPresentOnAny(listOf(ZERO, ONE))
         }
+
+        override val numberOfArgs: Int
+            get() = TODO("Not yet implemented")
+
     }
 
-    object Shank : Ability("Shank") {
+    object Shank: Ability("Shank", 1) {
         override fun isApplicable(skirmish: Skirmish): Boolean {
             return skirmish.heroParty.isPresentOnAny(listOf(ZERO, ONE))
         }
     }
 }
 
-object BoneSoldier : EnemyClass(
+object BoneSoldier: EnemyClass(
     name = "Bone Soldier",
     baseHp = 10,
     minDamage = 3,
@@ -48,20 +57,20 @@ object BoneSoldier : EnemyClass(
     abilities = listOf(GraveyardSlash, GraveyardStumble)
 ) {
 
-    object GraveyardSlash : Ability("Graveyard Slash") {
+    object GraveyardSlash: Ability("Graveyard Slash", 1) {
         override fun isApplicable(skirmish: Skirmish): Boolean {
             return isPresentOnPositions(skirmish.heroParty, listOf(ZERO, ONE, THREE))
         }
     }
 
-    object GraveyardStumble : Ability("Graveyard Stumble") {
+    object GraveyardStumble: Ability("Graveyard Stumble", 1) {
         override fun isApplicable(skirmish: Skirmish): Boolean {
             return isPresentOnPositions(skirmish.heroParty, listOf(ZERO, ONE, THREE))
         }
     }
 }
 
-object Spider : EnemyClass(
+object Spider: EnemyClass(
     name = "Spider",
     baseHp = 8,
     minDamage = 3,
@@ -70,12 +79,12 @@ object Spider : EnemyClass(
     abilities = listOf(Spit, Bite)
 ) {
 
-    object Spit : Ability("Spit") {
+    object Spit: Ability("Spit", 1) {
         override fun isApplicable(skirmish: Skirmish): Boolean = isPresentOnPositions(skirmish.heroParty, ALL_FOUR)
 
     }
 
-    object Bite : Ability("Bite") {
+    object Bite: Ability("Bite", 1) {
         override fun isApplicable(skirmish: Skirmish): Boolean = isPresentOnPositions(skirmish.heroParty, ALL_FOUR)
     }
 }

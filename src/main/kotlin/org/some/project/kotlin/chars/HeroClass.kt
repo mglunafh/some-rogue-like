@@ -26,6 +26,10 @@ open class HeroClass(
         require(turns > 0) { "That's a playable character, it must have an ability to act at least once" }
         require(abilities.isNotEmpty()) { "Please give some abilities to the class" }
     }
+
+    override val abilitiesLookUp: Map<String, Ability> by lazy {
+        abilities.associateBy { it.commandName }
+    }
 }
 
 object Crusader : HeroClass(
@@ -37,7 +41,7 @@ object Crusader : HeroClass(
     abilities = listOf(Smite, CrushingBlow, ShowThemTheBills)
 ) {
 
-    object Smite : Ability("Smite") {
+    object Smite : Ability("Smite", 1) {
         val effect = AbilityEffect(effect = Damage(8), appliedTo = AnyOf.FRONT_TWO, appliedFrom = AnyOf.FRONT_TWO)
 
         override fun isApplicable(skirmish: Skirmish): Boolean {
@@ -45,7 +49,7 @@ object Crusader : HeroClass(
         }
     }
 
-    object CrushingBlow : Ability("Crushing Blow") {
+    object CrushingBlow : Ability("Crushing Blow", 1) {
         val effect = AbilityEffect(effect = Damage(4), appliedTo = AnyOf.FRONT_TWO, appliedFrom = AnyOf.FRONT_TWO)
 
         override fun isApplicable(skirmish: Skirmish): Boolean {
@@ -53,7 +57,7 @@ object Crusader : HeroClass(
         }
     }
 
-    object ShowThemTheBills : Ability("Show Them the Bills") {
+    object ShowThemTheBills : Ability("Show Them the Bills", 0) {
         val effect = AbilityEffect(effect = Damage(3), appliedTo = AllOf.FRONT_TWO, appliedFrom = AnyOf.FRONT_TWO)
 
         override fun isApplicable(skirmish: Skirmish): Boolean {
@@ -71,7 +75,7 @@ object Highwayman : HeroClass(
     abilities = listOf(DuelistAdvance, PointBlackShot)
 ) {
 
-    object DuelistAdvance : Ability("Duelist Advance") {
+    object DuelistAdvance : Ability("Duelist Advance", 1) {
         // TODO: move forward
         // TODO: riposte
         val effect = AbilityEffect(effect = Damage(3), appliedTo = AnyOf.FRONT_THREE, appliedFrom = AnyOf.FRONT_THREE)
@@ -81,7 +85,7 @@ object Highwayman : HeroClass(
         }
     }
 
-    object PointBlackShot : Ability("Point-Blank Shot") {
+    object PointBlackShot : Ability("Point-Blank Shot", 0) {
 
         // TODO: move back
         val effect = AbilityEffect(effect = Damage(10), appliedTo = AnyOf(ZERO), appliedFrom = AnyOf(ZERO))
@@ -101,17 +105,17 @@ object Vestal : HeroClass(
     abilities = listOf(MaceBash, DivineGrace, DivineComfort)
 ) {
 
-    object DivineComfort : Ability("Divine Comfort") {
+    object DivineComfort : Ability("Divine Comfort", 1) {
         val effect = AbilityEffect(effect = Healing(10), appliedTo = AnyOf.ALL_FOUR, appliedFrom = AnyOf.BACKLINE_TWO)
         override fun isApplicable(skirmish: Skirmish): Boolean = true
     }
 
-    object DivineGrace : Ability("Divine Grace") {
+    object DivineGrace : Ability("Divine Grace", 0) {
         val effect = AbilityEffect(effect = Healing(4), appliedTo = AllOf.ALL_FOUR, appliedFrom = AnyOf.BACKLINE_THREE)
         override fun isApplicable(skirmish: Skirmish): Boolean = true
     }
 
-    object MaceBash : Ability("Mace Bash") {
+    object MaceBash : Ability("Mace Bash", 1) {
         val effect = AbilityEffect(effect = Damage(4), appliedTo = AnyOf.FRONT_TWO, appliedFrom = AnyOf.FRONT_TWO)
 
         override fun isApplicable(skirmish: Skirmish): Boolean {

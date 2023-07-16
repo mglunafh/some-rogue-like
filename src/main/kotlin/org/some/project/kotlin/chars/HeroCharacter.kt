@@ -1,7 +1,6 @@
 package org.some.project.kotlin.chars
 
 import org.some.project.kotlin.Experience
-import org.some.project.kotlin.FancyName
 
 class HeroCharacter(
     charClass: HeroClass,
@@ -11,7 +10,7 @@ class HeroCharacter(
     override val turns: Int,
     override val speed: Int,
     isAlive: Boolean
-): DungeonCharacter(charClass, hp, isAlive), HasTurns, FancyName {
+): DungeonCharacter(charClass, hp, isAlive), HasTurns {
 
     constructor(charClass: HeroClass, name: String, isAlive: Boolean = true) :
             this(

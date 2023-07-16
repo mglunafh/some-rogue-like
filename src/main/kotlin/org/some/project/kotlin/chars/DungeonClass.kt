@@ -14,6 +14,7 @@ interface DungeonClass : FancyName {
     val turns: Int
     val speed: Int
     val abilities: List<Ability>
+    val abilitiesLookUp: Map<String, Ability>
 
     override val fancyName: String
         get() = "\u001b[34m$name\u001b[0m"
