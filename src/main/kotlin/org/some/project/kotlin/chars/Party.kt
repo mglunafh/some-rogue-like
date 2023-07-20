@@ -13,8 +13,12 @@ class Party<T : DungeonCharacter> private constructor(characterList: List<T>) {
 
     init {
         require(characterList.size <= PARTY_SIZE) { "Too many characters in one party: ${characterList.size}" }
-        characters = MutableList(PARTY_SIZE) {
-            characterList.getOrNull(it)
+        characters = MutableList(PARTY_SIZE) { pos ->
+            val chr = characterList.getOrNull(pos)
+            chr?.let {
+                it.pos = Position.fromInt(pos)
+            }
+            chr
         }
     }
 

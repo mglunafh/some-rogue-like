@@ -20,6 +20,6 @@ interface DungeonClass : FancyName {
         get() = "\u001b[34m$name\u001b[0m"
 
     val listOfAbilities: String
-        get() = "Abilities: ${abilities.joinToString { it.fancyName }}"
+        get() = "Abilities: ${abilities.joinToString { it.fancyName }} / ${abilities.joinToString { it.commandName }}"
 
 }

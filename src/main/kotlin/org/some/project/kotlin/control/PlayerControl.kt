@@ -1,14 +1,15 @@
 package org.some.project.kotlin.control
 
-import org.some.project.kotlin.abilities.Ability
+import org.some.project.kotlin.abilities.AbilityCast
 import org.some.project.kotlin.abilities.PassTurn
+import org.some.project.kotlin.abilities.Position
 import org.some.project.kotlin.chars.DungeonCharacter
 import org.some.project.kotlin.scenes.Skirmish
 import kotlin.system.exitProcess
 
 object PlayerControl: ControlType() {
 
-    override fun getAbility(skirmish: Skirmish, character: DungeonCharacter): Ability {
+    override fun getAbility(skirmish: Skirmish, character: DungeonCharacter): AbilityCast {
         val applicableAbilities = character.abilities.filter { it.isApplicable(skirmish) }
         if (applicableAbilities.isNotEmpty()) {
             print("can use any of ${applicableAbilities.joinToString { it.fancyName }}. > ")
@@ -29,21 +30,30 @@ object PlayerControl: ControlType() {
                         exitProcess(0)                          // TODO: Save system
                     }
                     in listOf("h", "help") -> {
-                        println("Help is not implemented yet, sorry")
-                        return applicableAbilities.random()
+                        print("Sorry, help is not implemented yet, go figure out yourself:> ")
+                        continue
                     }
                     in lookUpAbilities -> {
                         val potentialAbility = lookUpAbilities.getValue(abilityInput)
                         if (potentialAbility !in applicableAbilities) {
-                            println("Ability ${potentialAbility.fancyName} cannot be used, use another one: > ")
+                            print("Ability ${potentialAbility.fancyName} cannot be used, use another one: > ")
                             continue
                         }
-                        if (args.size <= potentialAbility.numberOfArgs) {
-                            println("Ability ${potentialAbility.fancyName} needs a target, please specify with target: > ")
+                        if (potentialAbility.numberOfArgs == 0) {
+                            return AbilityCast(potentialAbility, character.pos)
+                        }
+                        if (args.size - 1 < potentialAbility.numberOfArgs) {
+                            print("Ability ${potentialAbility.fancyName} needs a target, please specify with target: > ")
                             continue
                         }
-                        // TODO: argument input
-                        return potentialAbility
+                        val result = Position.convert(args[1])
+                        if (result.isFailure) {
+                            print("Could not understand argument: ${result.errorMessageOrNull()}")
+                            continue
+                        }
+                        else {
+                            return AbilityCast(potentialAbility, result.getOrNull()!!)
+                        }
                     }
                     else -> {
                         print("Could not understand the input, sorry, try again: > ")
@@ -52,7 +62,7 @@ object PlayerControl: ControlType() {
             } while (true)
         } else {
             print("cannot use anything. ")
-            return PassTurn
+            return AbilityCast(PassTurn, character.pos)
         }
     }
 }

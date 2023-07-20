@@ -1,6 +1,7 @@
 package org.some.project.kotlin.chars
 
 import org.some.project.kotlin.Experience
+import org.some.project.kotlin.abilities.Position
 
 class HeroCharacter(
     charClass: HeroClass,
@@ -9,10 +10,11 @@ class HeroCharacter(
     hp: Int,
     override val turns: Int,
     override val speed: Int,
-    isAlive: Boolean
-): DungeonCharacter(charClass, hp, isAlive), HasTurns {
+    isAlive: Boolean,
+    pos: Position
+): DungeonCharacter(charClass, hp, isAlive, pos), HasTurns {
 
-    constructor(charClass: HeroClass, name: String, isAlive: Boolean = true) :
+    constructor(charClass: HeroClass, name: String, pos: Position, isAlive: Boolean = true) :
             this(
                 charClass = charClass,
                 name = name,
@@ -20,7 +22,8 @@ class HeroCharacter(
                 hp = charClass.baseHp,
                 turns = charClass.turns,
                 speed = charClass.speed,
-                isAlive = isAlive
+                isAlive = isAlive,
+                pos = pos
             )
 
     var experience: Experience = exp

@@ -30,7 +30,7 @@ class Skirmish(
         var tempCollection = mutableListOf<Triple<Int, DungeonCharacter, ControlType>>()
         heroParty.getCharacters().forEach {
             it?.let {
-                tempCollection.add(Triple(it.speed, it, PlayerControl))
+                tempCollection.add(Triple(it.speed, it, ComputerControl))       // <- switch to PlayerControl
             }
         }
         enemyParty.getCharacters().forEach {
@@ -45,6 +45,11 @@ class Skirmish(
             .toMutableList()
 
         sequenceOfTurns = LinkedList(tempCollection)
+    }
+
+    fun areTeammates(person1: DungeonCharacter, person2: DungeonCharacter): Boolean {
+        return (person1 is HeroCharacter && person2 is HeroCharacter)
+                || (person1 is EnemyCharacter && person2 is EnemyCharacter)
     }
 
     val battlefield: String
@@ -73,10 +78,8 @@ class Skirmish(
                 PlayerControl   -> "(by player)"
             }
             print("(SPD ${curCharTuple.first}) ${curCharTuple.second.fancyName} turn $control: ")
-            val ability = controlType.getAbility(this, curChar)
-
-            println(ability.fancyName)
-
+            curChar.performAbility(this, controlType)
         } while (sequenceOfTurns.isNotEmpty())
+        println(battlefield)
     }
 }

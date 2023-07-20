@@ -1,6 +1,7 @@
 # A list of high-level concepts which would be cool to have
 
-* Character traits system
+* Internationalization/localization/ Language support: english, russian, interslavic
+* Character core personality traits system
   * Big 5 personality traits
   * Actions and interpersonal dynamics based on personality traits
   * may need some help of psychologists and/or research
@@ -19,4 +20,5 @@
   * create classes for Map: Room, Corridor
   * create classes for random events in a corridor and a room: bag, bookshelf, trap, enemies
 * A bunch of other scale parameters in addition to HP: stress, mana, stamina/fatigue
-* Create a specification for the different stages of what features the game consists of.
+* Create a specification (concept document, design document) of the game at the different stages
+  of development, what features it consists of.
