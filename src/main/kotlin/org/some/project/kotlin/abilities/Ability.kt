@@ -13,14 +13,11 @@ import org.some.project.kotlin.control.CommandName
 import org.some.project.kotlin.scenes.Skirmish
 import java.lang.IllegalStateException
 
-abstract class Ability(
+abstract class Ability<out E: BasicEffect>(
     val name: String,
     override val numberOfArgs: Int,
-    val mainEffect: AbilityEffect
+    val mainEffect: AbilityEffect<E>
 ): FancyName, CommandName {
-
-    // probably should be deprecated
-    abstract fun isApplicable(skirmish: Skirmish): Boolean
 
     abstract fun apply(skirmish: Skirmish, dealer: DungeonCharacter, targetPosition: Position)
 
@@ -54,20 +51,18 @@ abstract class Ability(
     }
 
     companion object {
-        val errorLambda = { dealer: DungeonCharacter, pos: Position, ability: Ability ->
+        fun <E: BasicEffect> errorLambda(dealer: DungeonCharacter, pos: Position, ability: Ability<E>) : String =
             "Fix the target validation please:" +
                     " ${dealer.fancyName} tries to hit the empty position $pos with ${ability.fancyName}"
-        }
+
     }
 }
 
-object PassTurn: Ability(
+object PassTurn: Ability<PassEffect>(
     name = "Pass",
     numberOfArgs = 0,
-    mainEffect = AbilityEffect(Pass, appliedTo = AnyOf.ALL_FOUR, appliedFrom = AnyOf.ALL_FOUR)
+    mainEffect = AbilityEffect(PassEffect, appliedTo = AnyOf.ALL_FOUR, appliedFrom = AnyOf.ALL_FOUR)
 ) {
-
-    override fun isApplicable(skirmish: Skirmish): Boolean = true
 
     override fun apply(skirmish: Skirmish, dealer: DungeonCharacter, targetPosition: Position) {
         println("${dealer.fancyName} passes a turn.")
@@ -77,18 +72,6 @@ object PassTurn: Ability(
         return caster == mainTarget
     }
 }
-
-class AbilityEffect(val effect: BasicEffect, val appliedTo: AppliedTo, val appliedFrom: AppliedTo)
-
-sealed class BasicEffect
-
-data class Damage(val dmg: Int): BasicEffect()
-
-data class Healing(val heal: Int): BasicEffect()
-
-object Stun: BasicEffect()
-
-object Pass: BasicEffect()
 
 sealed class AppliedTo(positions: Set<Position>) {
 
@@ -143,7 +126,7 @@ value class Position private constructor(val pos: Int) {
         val ALL_FOUR = listOf(ZERO, ONE, TWO, THREE)
 
         fun convert(arg: String): MyResult<Position> {
-            return when (val t= arg.toIntOrNull()) {
+            return when (val t = arg.toIntOrNull()) {
                 null -> MyResult.failure("Could not parse position")
                 in 0 until GLOBAL_PARTY_SIZE -> MyResult.success(Position(t))
                 else -> MyResult.failure("Position exceeds boundaries")
@@ -151,11 +134,12 @@ value class Position private constructor(val pos: Int) {
         }
 
         fun fromInt(number: Int): Position {
-            return when (number) {
-                0 -> ZERO
-                1 -> ONE
-                2 -> TWO
-                3 -> THREE
+            return when {
+                number == 0 -> ZERO
+                number == 1 -> ONE
+                number == 2 -> TWO
+                number == 3 -> THREE
+                number < MAX_POSITION -> throw IllegalStateException("Somehow position for '$number' hasn't been defined")
                 else -> throw IllegalStateException("Number $number cannot represent a valid position from 0 to $MAX_POSITION")
             }
         }

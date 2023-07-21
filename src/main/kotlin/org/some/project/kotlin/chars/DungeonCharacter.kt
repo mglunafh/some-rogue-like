@@ -2,6 +2,7 @@ package org.some.project.kotlin.chars
 
 import org.some.project.kotlin.FancyName
 import org.some.project.kotlin.abilities.Ability
+import org.some.project.kotlin.abilities.BasicEffect
 import org.some.project.kotlin.abilities.PassTurn
 import org.some.project.kotlin.abilities.Position
 import org.some.project.kotlin.control.ControlType
@@ -21,10 +22,13 @@ open class DungeonCharacter(
     var isAlive: Boolean = isAlive
         private set
 
+    val isDead: Boolean
+        get() = !isAlive
+
     var pos: Position = pos
         internal set
 
-    val abilities: List<Ability> by charClass
+    val abilities: List<Ability<BasicEffect>> by charClass
 
     open val description: String
         get() = "${charClass.fancyName}, ${currentHp}hp, ${if (isAlive) "alive" else "dead"}"

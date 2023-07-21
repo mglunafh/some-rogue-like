@@ -1,16 +1,19 @@
 # TO-DO list
 
-* try to do typed characters and typed abilities
+* ability should return some results of its application
 * add description to the abilities, at least in javadoc
 * create the system of commands
-* add move back / move forward to the characters
+* add move back / move forward to the characters (and the party)
 * RGL-7 Abstract out the console output (View)
+* create criteria classes for the main target of the ability 
+* implement friend recognition system
 
 ----
 # In Progress
 
-* RGL-8 create document with overall description and entities  
-* RGL-5 take parameters for ability, perform abilities from the input and complete skirmish event loop
+* RGL-9 try to do typed characters and typed abilities
+* RGL-8 create document with overall description and entities (Abilities)
+* RGL-5 (PlayerControl) take parameters for ability, perform abilities from the input
 
 ----
 # Implemented 
@@ -18,7 +21,7 @@
 * RGL-8 create ability system which works
 * RGL-7 added basic colors to the console output
 * RGL-6 documented the requirements for the console command system
-* RGL-5 Created a game loop for skirmish, take input from the player
+* RGL-5 Created a game loop for skirmish, take input from the player, complete skirmish event loop
 * RGL-4 create party, adjust abilities
 * RGL-3 Created some monsters
 * RGL-2 Created **Experience**, **CharacterClass** and some implementations, **DungeonCharacter**,

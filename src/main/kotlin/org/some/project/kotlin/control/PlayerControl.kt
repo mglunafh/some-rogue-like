@@ -1,6 +1,7 @@
 package org.some.project.kotlin.control
 
 import org.some.project.kotlin.abilities.AbilityCast
+import org.some.project.kotlin.abilities.BasicEffect
 import org.some.project.kotlin.abilities.PassTurn
 import org.some.project.kotlin.abilities.Position
 import org.some.project.kotlin.chars.DungeonCharacter
@@ -9,8 +10,8 @@ import kotlin.system.exitProcess
 
 object PlayerControl: ControlType() {
 
-    override fun getAbility(skirmish: Skirmish, character: DungeonCharacter): AbilityCast {
-        val applicableAbilities = character.abilities.filter { it.isApplicable(skirmish) }
+    override fun getAbility(skirmish: Skirmish, character: DungeonCharacter): AbilityCast<BasicEffect> {
+        val applicableAbilities = character.abilities.filter { it.canBeUsedFrom(character.pos) }
         if (applicableAbilities.isNotEmpty()) {
             print("can use any of ${applicableAbilities.joinToString { it.fancyName }}. > ")
 

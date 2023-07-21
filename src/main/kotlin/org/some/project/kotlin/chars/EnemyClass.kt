@@ -4,10 +4,9 @@ import org.some.project.kotlin.abilities.Ability
 import org.some.project.kotlin.abilities.AbilityEffect
 import org.some.project.kotlin.abilities.AllOf
 import org.some.project.kotlin.abilities.AnyOf
+import org.some.project.kotlin.abilities.BasicEffect
 import org.some.project.kotlin.abilities.Damage
 import org.some.project.kotlin.abilities.Position
-import org.some.project.kotlin.abilities.Position.Companion.ONE
-import org.some.project.kotlin.abilities.Position.Companion.ZERO
 import org.some.project.kotlin.scenes.Skirmish
 
 open class EnemyClass(
@@ -17,10 +16,10 @@ open class EnemyClass(
     final override val maxDamage: Int,
     final override val turns: Int = 1,
     final override val speed: Int,
-    final override val abilities: List<Ability>
+    final override val abilities: List<Ability<BasicEffect>>
 ): DungeonClass {
 
-    override val abilitiesLookUp: Map<String, Ability> by lazy {
+    override val abilitiesLookUp: Map<String, Ability<BasicEffect>> by lazy {
         abilities.associateBy { it.commandName }
     }
 }
@@ -34,15 +33,11 @@ object Brigand: EnemyClass(
     abilities = listOf(Slice, Shank)
 ) {
 
-    object Slice: Ability(
+    object Slice: Ability<Damage>(
         name = "Slice",
         numberOfArgs = 1,
         mainEffect = AbilityEffect(effect = Damage(4), appliedFrom = AnyOf.FRONT_THREE, appliedTo = AllOf.FRONT_TWO)
     ) {
-
-        override fun isApplicable(skirmish: Skirmish): Boolean {
-            return skirmish.heroParty.isPresentOnAny(listOf(ZERO, ONE))
-        }
 
         override fun apply(skirmish: Skirmish, dealer: DungeonCharacter, targetPosition: Position) {
             val targetPositions = mainEffect.appliedTo.positions
@@ -61,19 +56,17 @@ object Brigand: EnemyClass(
         }
     }
 
-    object Shank: Ability(
+    object Shank: Ability<Damage>(
         name = "Shank",
         numberOfArgs = 1,
-        mainEffect = AbilityEffect(effect = Damage(6), appliedFrom = AnyOf.FRONT_THREE, appliedTo = AnyOf.FRONT_TWO)) {
+        mainEffect = AbilityEffect(effect = Damage(6), appliedFrom = AnyOf.FRONT_THREE, appliedTo = AnyOf.FRONT_TWO)
+    ) {
 
-        override fun isApplicable(skirmish: Skirmish): Boolean {
-            return skirmish.heroParty.isPresentOnAny(listOf(ZERO, ONE))
-        }
 
         override fun apply(skirmish: Skirmish, dealer: DungeonCharacter, targetPosition: Position) {
             val target = skirmish.heroParty[targetPosition]
             requireNotNull(target) { errorLambda(dealer, targetPosition, this) }
-            val damage = (mainEffect.effect as Damage).dmg
+            val damage = mainEffect.effect.dmg
             target.takeDamage(damage)
             println("${dealer.fancyName} hit ${target.fancyName} for $damage")
         }
@@ -89,37 +82,39 @@ object BoneSoldier: EnemyClass(
     abilities = listOf(GraveyardSlash, GraveyardStumble)
 ) {
 
-    object GraveyardSlash: Ability(
+    object GraveyardSlash: Ability<Damage>(
         name = "Graveyard Slash",
         numberOfArgs = 1,
-        mainEffect = AbilityEffect(effect = Damage(5), appliedTo = AnyOf.FRONT_THREE, appliedFrom = AnyOf.FRONT_TWO)) {
+        mainEffect = AbilityEffect(effect = Damage(5), appliedTo = AnyOf.FRONT_THREE, appliedFrom = AnyOf.FRONT_TWO)
+    ) {
 
-        override fun isApplicable(skirmish: Skirmish): Boolean {
-            return isPresentOnPositions(skirmish.heroParty, mainEffect.appliedTo.positions)
-        }
 
         override fun apply(skirmish: Skirmish, dealer: DungeonCharacter, targetPosition: Position) {
             val target = skirmish.heroParty[targetPosition]
             requireNotNull(target) { errorLambda(dealer, targetPosition, this) }
-            val damage = (mainEffect.effect as Damage).dmg
+            val damage = mainEffect.effect.dmg
             target.takeDamage(damage)
-            println("${dealer.fancyName} hit $target for $damage")
+            println("${dealer.fancyName} hit ${target.fancyName} for $damage")
         }
     }
 
-    object GraveyardStumble: Ability(
+    object GraveyardStumble: Ability<Damage>(
         name = "Graveyard Stumble",
         numberOfArgs = 1,
-        mainEffect = AbilityEffect(effect = Damage(4), appliedTo = AnyOf.FRONT_THREE, appliedFrom = AnyOf.BACKLINE_THREE)) {
+        mainEffect = AbilityEffect(
+            effect = Damage(4),
+            appliedTo = AnyOf.FRONT_THREE,
+            appliedFrom = AnyOf.BACKLINE_THREE
+        )
+    ) {
 
-        override fun isApplicable(skirmish: Skirmish): Boolean {
-            return isPresentOnPositions(skirmish.heroParty, mainEffect.appliedTo.positions)
-        }
 
         override fun apply(skirmish: Skirmish, dealer: DungeonCharacter, targetPosition: Position) {
             val target = skirmish.heroParty[targetPosition]
             requireNotNull(target) { errorLambda(dealer, targetPosition, this) }
-            target.takeDamage((mainEffect.effect as Damage).dmg)
+            val damage = GraveyardSlash.mainEffect.effect.dmg
+            target.takeDamage(mainEffect.effect.dmg)
+            println("${dealer.fancyName} hit ${target.fancyName} for $damage")
         }
     }
 }
@@ -133,29 +128,34 @@ object Spider: EnemyClass(
     abilities = listOf(Spit, Bite)
 ) {
 
-    object Spit: Ability(
+    object Spit: Ability<Damage>(
         name = "Spit",
         numberOfArgs = 1,
-        mainEffect = AbilityEffect(Damage(4), appliedTo = AnyOf.ALL_FOUR, appliedFrom = AnyOf.ALL_FOUR)) {
+        mainEffect = AbilityEffect(Damage(4), appliedTo = AnyOf.ALL_FOUR, appliedFrom = AnyOf.ALL_FOUR)
+    ) {
 
-        override fun isApplicable(skirmish: Skirmish): Boolean = isPresentOnPositions(skirmish.heroParty, mainEffect.appliedTo.positions)
+
         override fun apply(skirmish: Skirmish, dealer: DungeonCharacter, targetPosition: Position) {
             val target = skirmish.heroParty[targetPosition]
             requireNotNull(target) { errorLambda(dealer, targetPosition, this) }
-            target.takeDamage((mainEffect.effect as Damage).dmg)
+            val damage = mainEffect.effect.dmg
+            target.takeDamage(damage)
+            println("${dealer.fancyName} hit ${target.fancyName} for $damage")
         }
     }
 
-    object Bite: Ability(
+    object Bite: Ability<Damage>(
         name = "Bite",
         numberOfArgs = 1,
-        mainEffect = AbilityEffect(Damage(4), appliedTo = AnyOf.ALL_FOUR, appliedFrom = AnyOf.ALL_FOUR)) {
+        mainEffect = AbilityEffect(Damage(4), appliedTo = AnyOf.ALL_FOUR, appliedFrom = AnyOf.ALL_FOUR)
+    ) {
 
-        override fun isApplicable(skirmish: Skirmish): Boolean = isPresentOnPositions(skirmish.heroParty, mainEffect.appliedTo.positions)
         override fun apply(skirmish: Skirmish, dealer: DungeonCharacter, targetPosition: Position) {
             val target = skirmish.heroParty[targetPosition]
             requireNotNull(target) { errorLambda(dealer, targetPosition, this) }
-            target.takeDamage((mainEffect.effect as Damage).dmg)
+            val damage = mainEffect.effect.dmg
+            target.takeDamage(damage)
+            println("${dealer.fancyName} hit ${target.fancyName} for $damage")
         }
     }
 }

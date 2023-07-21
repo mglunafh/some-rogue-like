@@ -49,21 +49,21 @@ class Party<T : DungeonCharacter> private constructor(characterList: List<T>) {
     fun getCharacters(): List<T?> {
         return characters.toList()
     }
-    fun isAlive(): Boolean {
-        return characters.any { it != null && it.isAlive }
-    }
+    val isAlive: Boolean
+        get() = characters.any { it != null && it.isAlive }
 
-    // is it possible to implement destructuring here ?
+    val gotWiped: Boolean
+        get() = characters.all { it == null || it.isDead }
 
-    fun descriptionBacklineFirst(): String {
+    fun descriptionBackLineFirst(): String {
         return characters.reversed()
-            .mapIndexed { i, it -> "${it?.charClass?.fancyName} (${characters.size - i})" }
+            .mapIndexed { i, it -> it?.let { "${it.fancyName}[${it.currentHp}/${it.charClass.baseHp}] (${PARTY_SIZE - i})" } ?: "_" }
             .joinToString()
     }
 
-    fun descriptionFrontlineFirst(): String {
+    fun descriptionFrontLineFirst(): String {
         return characters
             .filterNotNull()
-            .mapIndexed { i, it ->  "${it.charClass.fancyName} (${i + 1})" }. joinToString()
+            .mapIndexed { i, it ->  "(${i + 1}) ${it.fancyName}[${it.currentHp}/${it.charClass.baseHp}]" }. joinToString()
     }
 }
