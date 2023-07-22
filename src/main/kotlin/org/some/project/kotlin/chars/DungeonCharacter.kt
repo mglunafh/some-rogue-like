@@ -54,6 +54,7 @@ open class DungeonCharacter(
         if (damagePoints >= currentHp) {
             isAlive = false
             currentHp = 0
+            println("$fancyName was killed!")
         } else {
             currentHp -= damagePoints
         }

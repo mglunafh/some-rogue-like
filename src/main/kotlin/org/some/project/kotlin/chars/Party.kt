@@ -11,6 +11,8 @@ class Party<out T : DungeonCharacter> private constructor(characterList: List<T>
 
     private val characters: MutableList<T?>
 
+    private val deadCharacters: MutableList<T> = mutableListOf()
+
     init {
         require(characterList.size <= PARTY_SIZE) { "Too many characters in one party: ${characterList.size}" }
         characters = MutableList(PARTY_SIZE) { pos ->
@@ -65,6 +67,30 @@ class Party<out T : DungeonCharacter> private constructor(characterList: List<T>
         return characters
             .filterNotNull()
             .mapIndexed { i, it ->  "(${i + 1}) ${it.fancyName}[${it.currentHp}/${it.charClass.baseHp}]" }. joinToString()
+    }
+
+    fun removeDeadCharacters() {
+        var indAlive = 0
+        for (i in 0 until  characters.size) {
+            val t = characters[i]
+            if (t != null) {
+                if (t.isDead) {
+                    deadCharacters.add(t)
+                    characters[i] = null
+                }
+            }
+        }
+
+        for (i in 0 until characters.size) {
+            val t = characters[i]
+            if (t != null) {
+                if (indAlive < i) {
+                    characters[indAlive] = t
+                    characters[i] = null
+                }
+                indAlive++
+            }
+        }
     }
 
     enum class Team {

@@ -24,6 +24,8 @@ class Skirmish(
     lateinit var curCharTuple: Triple<Int, DungeonCharacter, ControlType>
         private set
 
+    val deleteCorpses = true
+
     init {
         require(heroParty.isAlive) { "At least one character in the party must be alive!" }
         sequenceOfTurns = decideTurnSequence(heroParty, enemyParty)
@@ -62,6 +64,23 @@ class Skirmish(
     private fun atRoundEnd() {
     }
 
+    private fun atTurnEnd(): SkirmishStatus {
+        removeCorpses()
+        return when {
+            heroParty.gotWiped -> SkirmishStatus.DEFEAT
+            enemyParty.gotWiped -> SkirmishStatus.VICTORY
+            else -> SkirmishStatus.CONTINUE_TURN
+        }
+    }
+
+    private fun removeCorpses() {
+        if (!deleteCorpses) {
+            return
+        }
+        heroParty.removeDeadCharacters()
+        enemyParty.removeDeadCharacters()
+    }
+
     fun run() {
         while (true) {
             println("\n      ----------Round $round ---------- ")
@@ -79,17 +98,22 @@ class Skirmish(
                 }
                 print("(SPD ${curCharTuple.first}) ${curCharTuple.second.fancyName} turn $control: ")
                 curChar.performAbility(this, controlType)
+
+                when (atTurnEnd()) {
+                    SkirmishStatus.VICTORY -> {
+                        println("Congratulations, your adventurers vanquished the enemy!")
+                        println("VICTORY")
+                        return
+                    }
+                    SkirmishStatus.DEFEAT -> {
+                        println("Unfortunately, your adventurers failed")
+                        println("DEFEAT")
+                        return
+                    }
+                    else -> {
+                    }
+                }
             } while (sequenceOfTurns.isNotEmpty())
-            if (heroParty.gotWiped) {
-                println("Unfortunately, your adventurers failed")
-                println("DEFEAT")
-                return
-            }
-            if (enemyParty.gotWiped) {
-                println("Congratulations, your adventurers vanquished the enemy!")
-                println("VICTORY")
-                return
-            }
             sequenceOfTurns = decideTurnSequence(heroParty, enemyParty)
             round++
         }
@@ -123,5 +147,9 @@ class Skirmish(
 
             return LinkedList(tempCollection)
         }
+    }
+
+    enum class SkirmishStatus {
+        CONTINUE_TURN, VICTORY, DEFEAT
     }
 }
