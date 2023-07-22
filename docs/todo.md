@@ -1,5 +1,7 @@
 # TO-DO list
 
+`[next item]`: RGL-13
+
 * add ability criteria for the caster (related to RGL-10)
 * ability should return some results of its application 
     (this should help with the correct sequence of the events during the ability cast)
@@ -14,13 +16,13 @@
 ----
 # In Progress
 
-* RGL-5 (PlayerControl) take parameters for ability, perform abilities from the input
+* RGL-5 (PlayerControl) take parameters for ability, validate input and perform abilities
 
 ----
 # Implemented 
 
-* GRL-12 implemented friend recognition system (DungeonCharacter 'team' property / helpful methods in Skirmish)
-* RGl-11 Remove dead characters from the battlefield
+* RGL-12 implemented friend recognition system (DungeonCharacter 'team' property / helpful methods in Skirmish)
+* RGL-11 Remove dead characters from the battlefield
 * RGL-10 Created criteria classes for the main target of the ability
 * RGL-9 Parameterized ability with the type of its basic effect
 * RGL-8 create ability system which works

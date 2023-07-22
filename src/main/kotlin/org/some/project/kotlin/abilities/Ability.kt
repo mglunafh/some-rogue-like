@@ -108,7 +108,7 @@ value class Position private constructor(val pos: Int) {
         return (pos + 1).toString()
     }
     companion object {
-        val MAX_POSITION = GLOBAL_PARTY_SIZE
+        const val MAX_POSITION = GLOBAL_PARTY_SIZE
 
         val  ZERO = Position(0)
         val   ONE = Position(1)
@@ -122,7 +122,7 @@ value class Position private constructor(val pos: Int) {
         fun convert(arg: String): MyResult<Position> {
             return when (val t = arg.toIntOrNull()) {
                 null -> MyResult.failure("Could not parse position")
-                in 0 until GLOBAL_PARTY_SIZE -> MyResult.success(Position(t))
+                in 1..MAX_POSITION -> MyResult.success(Position(t - 1))
                 else -> MyResult.failure("Position exceeds boundaries")
             }
         }

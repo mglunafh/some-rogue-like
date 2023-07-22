@@ -23,7 +23,6 @@ fun main() {
     val brigand = EnemyCharacter(Brigand, ZERO)
     val boneSoldier = EnemyCharacter(BoneSoldier, ZERO)
 
-
     val heroParty = Party(hwm, crusader, vestal)
     val enemyParty = Party(brigand, boneSoldier, spider)
 

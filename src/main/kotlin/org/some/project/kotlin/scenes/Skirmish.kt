@@ -130,7 +130,7 @@ class Skirmish(
                 .filterNotNull()
                 .filter { it.isAlive }
                 .forEach {
-                    tempCollection.add(Triple(it.speed, it, ComputerControl))       // <- switch to PlayerControl
+                    tempCollection.add(Triple(it.speed, it, PlayerControl))       // <- switch to PlayerControl
                 }
             enemyParty.getCharacters()
                 .filterNotNull()
