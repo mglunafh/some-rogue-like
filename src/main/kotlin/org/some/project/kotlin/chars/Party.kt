@@ -3,7 +3,7 @@ package org.some.project.kotlin.chars
 import org.some.project.kotlin.GLOBAL_PARTY_SIZE
 import org.some.project.kotlin.abilities.Position
 
-class Party<T : DungeonCharacter> private constructor(characterList: List<T>) {
+class Party<out T : DungeonCharacter> private constructor(characterList: List<T>) {
 
     companion object {
         const val PARTY_SIZE = GLOBAL_PARTY_SIZE
@@ -65,5 +65,9 @@ class Party<T : DungeonCharacter> private constructor(characterList: List<T>) {
         return characters
             .filterNotNull()
             .mapIndexed { i, it ->  "(${i + 1}) ${it.fancyName}[${it.currentHp}/${it.charClass.baseHp}]" }. joinToString()
+    }
+
+    enum class Team {
+        HEROES, FIENDS
     }
 }

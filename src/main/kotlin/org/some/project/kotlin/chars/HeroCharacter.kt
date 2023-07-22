@@ -2,6 +2,7 @@ package org.some.project.kotlin.chars
 
 import org.some.project.kotlin.Experience
 import org.some.project.kotlin.abilities.Position
+import org.some.project.kotlin.chars.Party.Team.HEROES
 
 class HeroCharacter(
     charClass: HeroClass,
@@ -12,7 +13,7 @@ class HeroCharacter(
     override val speed: Int,
     isAlive: Boolean,
     pos: Position
-): DungeonCharacter(charClass, hp, isAlive, pos), HasTurns {
+): DungeonCharacter(charClass, hp, isAlive, pos, HEROES), HasTurns {
 
     constructor(charClass: HeroClass, name: String, pos: Position, isAlive: Boolean = true) :
             this(
@@ -36,7 +37,7 @@ class HeroCharacter(
         get() = "${charClass.fancyName} $fancyName, ${experience.description}, ${currentHp}hp, ${if (isAlive) "alive" else "dead"}"
 
     fun gainExp(xp: Int) {
-        if (!isAlive) {
+        if (isDead) {
             return
         }
         experience = experience.gainExp(xp)

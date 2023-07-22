@@ -2,11 +2,13 @@ package org.some.project.kotlin.chars
 
 import org.some.project.kotlin.abilities.Ability
 import org.some.project.kotlin.abilities.AbilityEffect
-import org.some.project.kotlin.abilities.AllOf
+import org.some.project.kotlin.abilities.AllOnPositions
 import org.some.project.kotlin.abilities.AnyOf
 import org.some.project.kotlin.abilities.BasicEffect
 import org.some.project.kotlin.abilities.Damage
 import org.some.project.kotlin.abilities.Position
+import org.some.project.kotlin.abilities.TargetCriteria
+import org.some.project.kotlin.abilities.TargetCriteria.Companion.anyEnemy
 import org.some.project.kotlin.scenes.Skirmish
 
 open class EnemyClass(
@@ -36,14 +38,15 @@ object Brigand: EnemyClass(
     object Slice: Ability<Damage>(
         name = "Slice",
         numberOfArgs = 1,
-        mainEffect = AbilityEffect(effect = Damage(4), appliedFrom = AnyOf.FRONT_THREE, appliedTo = AllOf.FRONT_TWO)
+        mainEffect = AbilityEffect(effect = Damage(4), appliedFrom = AnyOf.FRONT_THREE, appliedTo = TargetCriteria.anyEnemy(Position.FRONTLINE_THREE))
     ) {
 
         override fun apply(skirmish: Skirmish, dealer: DungeonCharacter, targetPosition: Position) {
-            val targetPositions = mainEffect.appliedTo.positions
+            val criteria = Crusader.ShowThemTheBills.mainEffect.appliedTo.forPosition
+            val targetPositions = (criteria as AllOnPositions).positions
             require(targetPositions.any { skirmish.heroParty[it] != null }) {
                 "Fix the target validation please:" +
-                        " ${dealer.fancyName} tries to hit empty positions ${mainEffect.appliedTo.positions}" +
+                        " ${dealer.fancyName} tries to hit empty positions $targetPositions" +
                         " with ${this.fancyName}"
             }
             targetPositions.forEach {
@@ -59,9 +62,11 @@ object Brigand: EnemyClass(
     object Shank: Ability<Damage>(
         name = "Shank",
         numberOfArgs = 1,
-        mainEffect = AbilityEffect(effect = Damage(6), appliedFrom = AnyOf.FRONT_THREE, appliedTo = AnyOf.FRONT_TWO)
+        mainEffect = AbilityEffect(
+            effect = Damage(6),
+            appliedFrom = AnyOf.FRONT_THREE,
+            appliedTo = anyEnemy(Position.FRONTLINE_TWO))
     ) {
-
 
         override fun apply(skirmish: Skirmish, dealer: DungeonCharacter, targetPosition: Position) {
             val target = skirmish.heroParty[targetPosition]
@@ -85,9 +90,11 @@ object BoneSoldier: EnemyClass(
     object GraveyardSlash: Ability<Damage>(
         name = "Graveyard Slash",
         numberOfArgs = 1,
-        mainEffect = AbilityEffect(effect = Damage(5), appliedTo = AnyOf.FRONT_THREE, appliedFrom = AnyOf.FRONT_TWO)
+        mainEffect = AbilityEffect(
+            effect = Damage(5),
+            appliedFrom = AnyOf.FRONT_TWO,
+            appliedTo = anyEnemy(Position.FRONTLINE_THREE))
     ) {
-
 
         override fun apply(skirmish: Skirmish, dealer: DungeonCharacter, targetPosition: Position) {
             val target = skirmish.heroParty[targetPosition]
@@ -103,11 +110,10 @@ object BoneSoldier: EnemyClass(
         numberOfArgs = 1,
         mainEffect = AbilityEffect(
             effect = Damage(4),
-            appliedTo = AnyOf.FRONT_THREE,
+            appliedTo = anyEnemy(Position.FRONTLINE_THREE),
             appliedFrom = AnyOf.BACKLINE_THREE
         )
     ) {
-
 
         override fun apply(skirmish: Skirmish, dealer: DungeonCharacter, targetPosition: Position) {
             val target = skirmish.heroParty[targetPosition]
@@ -131,7 +137,10 @@ object Spider: EnemyClass(
     object Spit: Ability<Damage>(
         name = "Spit",
         numberOfArgs = 1,
-        mainEffect = AbilityEffect(Damage(4), appliedTo = AnyOf.ALL_FOUR, appliedFrom = AnyOf.ALL_FOUR)
+        mainEffect = AbilityEffect(
+            effect = Damage(4),
+            appliedFrom = AnyOf.ALL_FOUR,
+            appliedTo = anyEnemy(Position.ALL_FOUR))
     ) {
 
 
@@ -147,7 +156,10 @@ object Spider: EnemyClass(
     object Bite: Ability<Damage>(
         name = "Bite",
         numberOfArgs = 1,
-        mainEffect = AbilityEffect(Damage(4), appliedTo = AnyOf.ALL_FOUR, appliedFrom = AnyOf.ALL_FOUR)
+        mainEffect = AbilityEffect(
+            effect = Damage(4),
+            appliedFrom = AnyOf.ALL_FOUR,
+            appliedTo = anyEnemy(Position.ALL_FOUR))
     ) {
 
         override fun apply(skirmish: Skirmish, dealer: DungeonCharacter, targetPosition: Position) {
