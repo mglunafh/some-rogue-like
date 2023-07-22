@@ -3,6 +3,7 @@ package org.some.project.kotlin.abilities
 import org.some.project.kotlin.FancyName
 import org.some.project.kotlin.GLOBAL_PARTY_SIZE
 import org.some.project.kotlin.MyResult
+import org.some.project.kotlin.abilities.Position.Companion.ALL_FOUR
 import org.some.project.kotlin.abilities.Position.Companion.ONE
 import org.some.project.kotlin.abilities.Position.Companion.THREE
 import org.some.project.kotlin.abilities.Position.Companion.TWO
@@ -25,13 +26,8 @@ abstract class Ability<out E: BasicEffect>(
         return pos in mainEffect.appliedFrom.positions
     }
 
-    /**
-     * Basic implementation:
-     *   1) caster cannot cast an ability on themselves
-     *   2) the main target should be at any of the positions from the main effect properties
-     */
     open fun canBeUsedUpon(caster: DungeonCharacter, mainTarget: DungeonCharacter): Boolean {
-        return caster != mainTarget && mainTarget.pos in mainEffect.appliedTo.positions
+        return PassTurn.mainEffect.appliedTo.isApplicable(caster, mainTarget)
     }
 
     override val fancyName = "\u001b[34;1m${name}\u001b[0m"
@@ -61,15 +57,11 @@ abstract class Ability<out E: BasicEffect>(
 object PassTurn: Ability<PassEffect>(
     name = "Pass",
     numberOfArgs = 0,
-    mainEffect = AbilityEffect(PassEffect, appliedTo = AnyOf.ALL_FOUR, appliedFrom = AnyOf.ALL_FOUR)
+    mainEffect = AbilityEffect(PassEffect, appliedTo = TargetCriteria(AnyOnPositions(ALL_FOUR), setOf(Self)) , appliedFrom = AnyOf.ALL_FOUR)
 ) {
 
     override fun apply(skirmish: Skirmish, dealer: DungeonCharacter, targetPosition: Position) {
         println("${dealer.fancyName} passes a turn.")
-    }
-
-    override fun canBeUsedUpon(caster: DungeonCharacter, mainTarget: DungeonCharacter): Boolean {
-        return caster == mainTarget
     }
 }
 
@@ -123,6 +115,8 @@ value class Position private constructor(val pos: Int) {
         val   TWO = Position(2)
         val THREE = Position(3)
 
+        val FRONTLINE_TWO = listOf(ZERO, ONE)
+        val FRONTLINE_THREE = listOf(ZERO, ONE, TWO)
         val ALL_FOUR = listOf(ZERO, ONE, TWO, THREE)
 
         fun convert(arg: String): MyResult<Position> {

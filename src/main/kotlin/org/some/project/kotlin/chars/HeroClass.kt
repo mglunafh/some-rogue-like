@@ -2,14 +2,20 @@ package org.some.project.kotlin.chars
 
 import org.some.project.kotlin.abilities.Ability
 import org.some.project.kotlin.abilities.AbilityEffect
-import org.some.project.kotlin.abilities.AllOf
+import org.some.project.kotlin.abilities.AllOnPositions
 import org.some.project.kotlin.abilities.AnyOf
 import org.some.project.kotlin.abilities.BasicEffect
 import org.some.project.kotlin.abilities.Damage
 import org.some.project.kotlin.abilities.Healing
 import org.some.project.kotlin.abilities.Position
+import org.some.project.kotlin.abilities.Position.Companion.FRONTLINE_THREE
+import org.some.project.kotlin.abilities.Position.Companion.FRONTLINE_TWO
 import org.some.project.kotlin.abilities.Position.Companion.ZERO
 import org.some.project.kotlin.abilities.Stun
+import org.some.project.kotlin.abilities.TargetCriteria
+import org.some.project.kotlin.abilities.TargetCriteria.Companion.allAllies
+import org.some.project.kotlin.abilities.TargetCriteria.Companion.anyAlly
+import org.some.project.kotlin.abilities.TargetCriteria.Companion.anyEnemy
 import org.some.project.kotlin.scenes.Skirmish
 
 open class HeroClass(
@@ -47,7 +53,10 @@ object Crusader: HeroClass(
     object Smite: Ability<Damage>(
         name = "Smite",
         numberOfArgs = 1,
-        mainEffect = AbilityEffect(effect = Damage(8), appliedTo = AnyOf.FRONT_TWO, appliedFrom = AnyOf.FRONT_TWO)
+        mainEffect = AbilityEffect(
+            effect = Damage(8),
+            appliedTo = anyEnemy(FRONTLINE_TWO),
+            appliedFrom = AnyOf.FRONT_TWO)
     ) {
 
         override fun apply(skirmish: Skirmish, dealer: DungeonCharacter, targetPosition: Position) {
@@ -62,10 +71,16 @@ object Crusader: HeroClass(
     object CrushingBlow: Ability<Damage>(
         name = "Crushing Blow",
         numberOfArgs = 1,
-        mainEffect = AbilityEffect(effect = Damage(4), appliedTo = AnyOf.FRONT_TWO, appliedFrom = AnyOf.FRONT_TWO)
+        mainEffect = AbilityEffect(
+            effect = Damage(4),
+            appliedTo = anyEnemy(FRONTLINE_TWO),
+            appliedFrom = AnyOf.FRONT_TWO)
     ) {
 
-        val stun = AbilityEffect(effect = Stun, appliedTo = mainEffect.appliedTo, appliedFrom = mainEffect.appliedFrom)
+        val stun = AbilityEffect(
+            effect = Stun,
+            appliedFrom = mainEffect.appliedFrom,
+            appliedTo = mainEffect.appliedTo)
 
 
         override fun apply(skirmish: Skirmish, dealer: DungeonCharacter, targetPosition: Position) {
@@ -80,15 +95,18 @@ object Crusader: HeroClass(
     object ShowThemTheBills: Ability<Damage>(
         name = "Show Them the Bills",
         numberOfArgs = 0,
-        mainEffect = AbilityEffect(effect = Damage(3), appliedTo = AllOf.FRONT_TWO, appliedFrom = AnyOf.FRONT_TWO)
+        mainEffect = AbilityEffect(
+            effect = Damage(3),
+            appliedTo = TargetCriteria.allEnemies(FRONTLINE_TWO),
+            appliedFrom = AnyOf.FRONT_TWO)
     ) {
 
-
         override fun apply(skirmish: Skirmish, dealer: DungeonCharacter, targetPosition: Position) {
-            val targetPositions = mainEffect.appliedTo.positions
+            val criteria = mainEffect.appliedTo.forPosition
+            val targetPositions = (criteria as AllOnPositions).positions
             require(targetPositions.any { skirmish.enemyParty[it] != null }) {
                 "Fix the target validation please:" +
-                        " ${dealer.fancyName} tries to hit empty positions ${mainEffect.appliedTo.positions}" +
+                        " ${dealer.fancyName} tries to hit empty positions $targetPositions" +
                         " with ${this.fancyName}"
             }
             targetPositions.forEach {
@@ -116,7 +134,7 @@ object Highwayman: HeroClass(
         numberOfArgs = 1,
         mainEffect = AbilityEffect(
             effect = Damage(3),
-            appliedTo = AnyOf.FRONT_THREE,
+            appliedTo = anyEnemy(FRONTLINE_THREE),
             appliedFrom = AnyOf.BACKLINE_THREE
         )
     ) {
@@ -137,9 +155,8 @@ object Highwayman: HeroClass(
     object PointBlackShot: Ability<Damage>(
         name = "Point-Blank Shot",
         numberOfArgs = 0,
-        mainEffect = AbilityEffect(effect = Damage(10), appliedTo = AnyOf(ZERO), appliedFrom = AnyOf(ZERO))
+        mainEffect = AbilityEffect(effect = Damage(10), appliedFrom = AnyOf(ZERO), appliedTo = anyEnemy(ZERO))
     ) {
-
 
         override fun apply(skirmish: Skirmish, dealer: DungeonCharacter, targetPosition: Position) {
             require(targetPosition == ZERO) {
@@ -170,7 +187,7 @@ object Vestal: HeroClass(
     object DivineComfort: Ability<Healing>(
         name = "Divine Comfort",
         numberOfArgs = 1,
-        mainEffect = AbilityEffect(effect = Healing(10), appliedTo = AnyOf.ALL_FOUR, appliedFrom = AnyOf.BACKLINE_TWO)
+        mainEffect = AbilityEffect(effect = Healing(10), appliedFrom = AnyOf.BACKLINE_TWO, appliedTo = anyAlly())
     ) {
 
 
@@ -194,7 +211,7 @@ object Vestal: HeroClass(
     object DivineGrace: Ability<Healing>(
         name = "Divine Grace",
         numberOfArgs = 0,
-        mainEffect = AbilityEffect(effect = Healing(4), appliedTo = AllOf.ALL_FOUR, appliedFrom = AnyOf.BACKLINE_THREE)
+        mainEffect = AbilityEffect(effect = Healing(4), appliedFrom = AnyOf.BACKLINE_THREE, appliedTo = allAllies())
     ) {
 
         override fun canBeUsedUpon(caster: DungeonCharacter, mainTarget: DungeonCharacter): Boolean = true
@@ -212,9 +229,8 @@ object Vestal: HeroClass(
     object MaceBash: Ability<Damage>(
         name = "Mace Bash",
         numberOfArgs = 1,
-        mainEffect = AbilityEffect(effect = Damage(4), appliedTo = AnyOf.FRONT_TWO, appliedFrom = AnyOf.FRONT_TWO)
+        mainEffect = AbilityEffect(effect = Damage(4), appliedFrom = AnyOf.FRONT_TWO, appliedTo = anyEnemy(FRONTLINE_TWO))
     ) {
-
 
         override fun apply(skirmish: Skirmish, dealer: DungeonCharacter, targetPosition: Position) {
             val target = skirmish.enemyParty[targetPosition]

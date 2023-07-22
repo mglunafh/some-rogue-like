@@ -1,9 +1,11 @@
 # TO-DO list
 
+* add ability criteria for the caster (related to RGL-10)
 * ability should return some results of its application
 * add description to the abilities, at least in javadoc
 * create the system of commands
 * add move back / move forward to the characters (and the party)
+* RGL-9 try to do typed characters
 * RGL-7 Abstract out the console output (View)
 * create criteria classes for the main target of the ability 
 * implement friend recognition system
@@ -11,13 +13,14 @@
 ----
 # In Progress
 
-* RGL-9 try to do typed characters and typed abilities
 * RGL-8 create document with overall description and entities (Abilities)
 * RGL-5 (PlayerControl) take parameters for ability, perform abilities from the input
 
 ----
 # Implemented 
 
+* RGL-10 Created criteria classes for the main target of the ability
+* RGL-9 Parameterized ability with the type of its basic effect
 * RGL-8 create ability system which works
 * RGL-7 added basic colors to the console output
 * RGL-6 documented the requirements for the console command system

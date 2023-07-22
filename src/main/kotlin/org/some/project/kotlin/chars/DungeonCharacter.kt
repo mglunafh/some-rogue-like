@@ -13,7 +13,8 @@ open class DungeonCharacter(
     val charClass: DungeonClass,
     hp: Int,
     isAlive: Boolean,
-    pos: Position
+    pos: Position,
+    team: Party.Team
 ): FancyName {
 
     var currentHp: Int = hp
@@ -26,6 +27,9 @@ open class DungeonCharacter(
         get() = !isAlive
 
     var pos: Position = pos
+        internal set
+
+    var team = team
         internal set
 
     val abilities: List<Ability<BasicEffect>> by charClass

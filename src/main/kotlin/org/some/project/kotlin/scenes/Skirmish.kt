@@ -34,6 +34,20 @@ class Skirmish(
                 || (person1 is EnemyCharacter && person2 is EnemyCharacter)
     }
 
+    fun getAllyTeam(person: DungeonCharacter): Party<DungeonCharacter> {
+        return when(person.team) {
+            Party.Team.HEROES -> heroParty
+            Party.Team.FIENDS -> enemyParty
+        }
+    }
+
+    fun getOpposingTeam(person: DungeonCharacter): Party<DungeonCharacter> {
+        return when(person.team) {
+            Party.Team.HEROES -> enemyParty
+            Party.Team.FIENDS -> heroParty
+        }
+    }
+
     val battlefield: String
         get() {
             return "${heroParty.descriptionBackLineFirst()} --x-- ${enemyParty.descriptionFrontLineFirst()}"

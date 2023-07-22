@@ -1,6 +1,7 @@
 package org.some.project.kotlin.chars
 
 import org.some.project.kotlin.abilities.Position
+import org.some.project.kotlin.chars.Party.Team.FIENDS
 
 class EnemyCharacter(
     enemyClass: EnemyClass,
@@ -9,7 +10,7 @@ class EnemyCharacter(
     override var speed: Int,
     isAlive: Boolean,
     pos: Position
-) : DungeonCharacter(enemyClass, hp, isAlive, pos), HasTurns {
+) : DungeonCharacter(enemyClass, hp, isAlive, pos, FIENDS), HasTurns {
 
     constructor(enemyClass: EnemyClass, pos: Position, isAlive: Boolean = true) :
             this(
