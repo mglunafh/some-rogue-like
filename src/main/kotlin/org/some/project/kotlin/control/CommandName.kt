@@ -5,6 +5,6 @@ interface CommandName {
     // TODO: think of a list of aliases for a command to match by any of them
     val commandName: String
 
-    val numberOfArgs: Int
+    val needsTarget: Boolean
 
 }

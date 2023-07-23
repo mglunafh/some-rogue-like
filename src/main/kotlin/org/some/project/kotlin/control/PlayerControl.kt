@@ -2,6 +2,7 @@ package org.some.project.kotlin.control
 
 import org.some.project.kotlin.abilities.AbilityCast
 import org.some.project.kotlin.abilities.BasicEffect
+import org.some.project.kotlin.abilities.Enemy
 import org.some.project.kotlin.abilities.PassTurn
 import org.some.project.kotlin.abilities.Position
 import org.some.project.kotlin.chars.DungeonCharacter
@@ -30,6 +31,10 @@ object PlayerControl: ControlType() {
                         println("Have a nice day!")
                         exitProcess(0)                          // TODO: Save system
                     }
+                    in listOf("p", "pass") -> {
+                        return AbilityCast(PassTurn, character.pos)
+                    }
+                    // TODO RGL-15
                     in listOf("h", "help") -> {
                         print("Sorry, help is not implemented yet, go figure out yourself:> ")
                         continue
@@ -40,20 +45,38 @@ object PlayerControl: ControlType() {
                             print("Ability ${potentialAbility.fancyName} cannot be used, use another one: > ")
                             continue
                         }
-                        if (potentialAbility.numberOfArgs == 0) {
+                        if (!potentialAbility.needsTarget) {
                             return AbilityCast(potentialAbility, character.pos)
                         }
-                        if (args.size - 1 < potentialAbility.numberOfArgs) {
+                        // TODO RGL-15: add help for the ability
+                        if (args.size <= 1) {
                             print("Ability ${potentialAbility.fancyName} needs a target, please specify with target: > ")
                             continue
                         }
                         val result = Position.convert(args[1])
                         if (result.isFailure) {
-                            print("Could not understand argument: ${result.errorMessageOrNull()}")
+                            print("Could not understand argument: ${result.errorMessageOrNull()}. > ")
                             continue
                         }
                         else {
-                            return AbilityCast(potentialAbility, result.getOrNull()!!)
+                            val criteria = potentialAbility.mainEffect.appliedTo
+                            val position = result.getOrNull()!!
+                            val party = if (criteria.forCharacher.any { it == Enemy }) {
+                                skirmish.getOpposingTeam(character)
+                            } else {
+                                skirmish.getAllyTeam(character)
+                            }
+                            val t = party[position]
+                            if (t != null) {
+                                if (potentialAbility.canBeUsedUpon(character, t)) {
+                                    return AbilityCast(potentialAbility, position)
+                                }
+                                else {
+                                    print("Ability ${potentialAbility.fancyName} doesn't have a reach to position $position. > ")
+                                }
+                            } else {
+                                print("There is nobody on position $position. > ")
+                            }
                         }
                     }
                     else -> {

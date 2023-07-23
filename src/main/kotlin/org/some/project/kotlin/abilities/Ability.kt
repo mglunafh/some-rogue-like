@@ -16,7 +16,7 @@ import java.lang.IllegalStateException
 
 abstract class Ability<out E: BasicEffect>(
     val name: String,
-    override val numberOfArgs: Int,
+    override val needsTarget: Boolean,
     val mainEffect: AbilityEffect<E>
 ): FancyName, CommandName {
 
@@ -27,7 +27,7 @@ abstract class Ability<out E: BasicEffect>(
     }
 
     open fun canBeUsedUpon(caster: DungeonCharacter, mainTarget: DungeonCharacter): Boolean {
-        return PassTurn.mainEffect.appliedTo.isApplicable(caster, mainTarget)
+        return mainEffect.appliedTo.isApplicable(caster, mainTarget)
     }
 
     override val fancyName = "\u001b[34;1m${name}\u001b[0m"
@@ -56,7 +56,7 @@ abstract class Ability<out E: BasicEffect>(
 
 object PassTurn: Ability<PassEffect>(
     name = "Pass",
-    numberOfArgs = 0,
+    needsTarget = false,
     mainEffect = AbilityEffect(PassEffect, appliedTo = TargetCriteria(AnyOnPositions(ALL_FOUR), setOf(Self)) , appliedFrom = AnyOf.ALL_FOUR)
 ) {
 

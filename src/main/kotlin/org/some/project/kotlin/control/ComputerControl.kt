@@ -19,7 +19,8 @@ object ComputerControl: ControlType() {
         print("can use any of ${applicableAbilities.joinToString { it.fancyName }}. ")
 
         applicableAbilities.forEach { ability ->
-            if (ability.numberOfArgs == 0) {
+            // TODO RGL-15: Add help
+            if (!ability.needsTarget) {
                 return AbilityCast(ability, character.pos)
             }
             val criteria = ability.mainEffect.appliedTo
@@ -29,7 +30,7 @@ object ComputerControl: ControlType() {
                 skirmish.getAllyTeam(character)
             }
 
-            val targets = party.getCharacters().filterNotNull()
+            val targets = party.getCharacters().filterNotNull().shuffled()
             targets.forEach { target ->
                 if (criteria.isApplicable(character, target)) {
                     return AbilityCast(ability, target.pos)

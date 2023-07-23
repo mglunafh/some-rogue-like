@@ -1,22 +1,21 @@
 # TO-DO list
 
-`[next item]`: RGL-13
+`[next item]`: RGL-16 
 
 * add ability criteria for the caster (related to RGL-10)
 * ability should return some results of its application 
     (this should help with the correct sequence of the events during the ability cast)
-* add description to the abilities, at least in javadoc
+* **RGL-15** add description and/or help to the abilities, at least in javadoc
 * create the system of commands
-* add move back / move forward to the characters (and the party)
 * **RGL-9** try to do typed characters
 * **RGL-7** Abstract out the console output (View)
-* create criteria classes for the main target of the ability 
-* **RGL-8** create document with overall description and entities (Abilities)
+* **RGL-8** create document with overall description and entities (Ability-related)
 
 ----
 # In Progress
 
-* RGL-5 (PlayerControl) take parameters for ability, validate input and perform abilities
+* RGL-13 add move back / move forward to the characters (and the party)
+* RGL-14 remove nullable party characters
 
 ----
 # Implemented 
@@ -28,7 +27,7 @@
 * RGL-8 create ability system which works
 * RGL-7 added basic colors to the console output
 * RGL-6 documented the requirements for the console command system
-* RGL-5 Created a game loop for skirmish, take input from the player, complete skirmish event loop
+* RGL-5 Created a game loop for skirmish, take input from the player, validate input and perform abilities, complete skirmish event loop
 * RGL-4 create party, adjust abilities
 * RGL-3 Created some monsters
 * RGL-2 Created **Experience**, **CharacterClass** and some implementations, **DungeonCharacter**,
