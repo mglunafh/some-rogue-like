@@ -12,12 +12,19 @@ object ComputerControl: ControlType() {
     override fun getAbility(skirmish: Skirmish, character: DungeonCharacter): AbilityCast<BasicEffect> {
         Thread.sleep(500)
         val applicableAbilities = character.abilities.filter { it.canBeUsedFrom(character.pos) }.shuffled()
-        if (applicableAbilities.isEmpty()) {
-            print("cannot use anything. ")
-            return AbilityCast(PassTurn, character.pos)
-        }
 
-        print("can use any of ${applicableAbilities.joinToString { it.fancyName }}. ")
+        when (applicableAbilities.size) {
+            0 -> {
+                print("cannot use anything. ")
+                return AbilityCast(PassTurn, character.pos)
+            }
+            1 -> {
+                print("can use ${applicableAbilities[0].fancyName }. > ")
+            }
+            else -> {
+                print("can use any of ${applicableAbilities.joinToString { it.fancyName }}. > ")
+            }
+        }
 
         applicableAbilities.forEach { ability ->
             // TODO RGL-15: Add help
@@ -37,7 +44,6 @@ object ComputerControl: ControlType() {
                     return AbilityCast(ability, target.pos)
                 }
             }
-
         }
         print("cannot use anything. ")
         return AbilityCast(PassTurn, character.pos)

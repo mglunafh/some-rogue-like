@@ -51,6 +51,8 @@ class TargetCriteria(val forPosition: PositionCriterion, val forCharacher: Set<C
         fun anyAlly(): TargetCriteria = TargetCriteria(AnyOnPositions(ALL_FOUR), setOf(Ally))
 
         fun allAllies(): TargetCriteria = TargetCriteria(AllOnPositions(ALL_FOUR), setOf(Ally))
+
+        fun self(): TargetCriteria = TargetCriteria(AllOnPositions(ALL_FOUR), setOf(Self))
     }
 }
 

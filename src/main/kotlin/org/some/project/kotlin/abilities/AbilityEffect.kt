@@ -10,6 +10,10 @@ data class Healing(val heal: Int): BasicEffect()
 
 object Stun: BasicEffect()
 
+data class Back(val amount: Int = 1): BasicEffect()
+
+data class Forward(val amount: Int = 1): BasicEffect()
+
 object Buff: BasicEffect()
 
 object Debuff: BasicEffect()

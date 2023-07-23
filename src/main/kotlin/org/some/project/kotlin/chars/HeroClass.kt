@@ -4,14 +4,17 @@ import org.some.project.kotlin.abilities.Ability
 import org.some.project.kotlin.abilities.AbilityEffect
 import org.some.project.kotlin.abilities.AllOnPositions
 import org.some.project.kotlin.abilities.AnyOf
+import org.some.project.kotlin.abilities.Back
 import org.some.project.kotlin.abilities.BasicEffect
 import org.some.project.kotlin.abilities.Damage
+import org.some.project.kotlin.abilities.Forward
 import org.some.project.kotlin.abilities.Healing
 import org.some.project.kotlin.abilities.Position
 import org.some.project.kotlin.abilities.Position.Companion.FRONTLINE_THREE
 import org.some.project.kotlin.abilities.Position.Companion.FRONTLINE_TWO
 import org.some.project.kotlin.abilities.Position.Companion.ZERO
 import org.some.project.kotlin.abilities.Stun
+import org.some.project.kotlin.abilities.TargetCriteria
 import org.some.project.kotlin.abilities.TargetCriteria.Companion.allAllies
 import org.some.project.kotlin.abilities.TargetCriteria.Companion.allEnemies
 import org.some.project.kotlin.abilities.TargetCriteria.Companion.anyAlly
@@ -140,18 +143,26 @@ object Highwayman: HeroClass(
             appliedFrom = AnyOf.BACKLINE_THREE,
             appliedTo = anyEnemy(FRONTLINE_THREE))
     ) {
-        // TODO: move forward
         // TODO: riposte
 
+        private val moveForward = AbilityEffect(
+            effect = Forward(),
+            appliedFrom = mainEffect.appliedFrom,
+            appliedTo = TargetCriteria.self()
+        )
 
         override fun apply(skirmish: Skirmish, dealer: DungeonCharacter, targetPosition: Position) {
+            // main damage
             val team = skirmish.getOpposingTeam(dealer)
             val target = team[targetPosition]
             requireNotNull(target) { errorLambda(dealer, targetPosition, this) }
             val damage = mainEffect.effect.dmg
             target.takeDamage(damage)
             println("${dealer.fancyName} hit ${target.fancyName} for $damage")
-            // TODO: move forward
+
+            // move forward
+            skirmish.getAllyTeam(dealer).moveForward(dealer.pos, moveForward.effect.amount)
+            skirmish.moveHappened()
         }
     }
 
@@ -161,7 +172,14 @@ object Highwayman: HeroClass(
         mainEffect = AbilityEffect(effect = Damage(10), appliedFrom = AnyOf(ZERO), appliedTo = anyEnemy(ZERO))
     ) {
 
+        private val recoilSelfBack = AbilityEffect(
+            effect = Back(),
+            appliedFrom = mainEffect.appliedFrom,
+            appliedTo = TargetCriteria.self()
+        )
+
         override fun apply(skirmish: Skirmish, dealer: DungeonCharacter, targetPosition: Position) {
+            // main damage
             require(targetPosition == ZERO) {
                 "$fancyName must be applied to the first position, got '$targetPosition' instead"
             }
@@ -174,7 +192,10 @@ object Highwayman: HeroClass(
             val damage = mainEffect.effect.dmg
             target.takeDamage(damage)
             println("${dealer.fancyName} hit ${target.fancyName} for $damage")
-            // TODO move back
+
+            // move back
+            skirmish.getAllyTeam(dealer).moveBack(dealer.pos, recoilSelfBack.effect.amount)
+            skirmish.moveHappened()
         }
     }
 }
@@ -223,11 +244,13 @@ object Vestal: HeroClass(
 
         override fun apply(skirmish: Skirmish, dealer: DungeonCharacter, targetPosition: Position) {
             val hpToRestore = mainEffect.effect.heal
-            skirmish.getAllyTeam(dealer).getCharacters()
-                .filter { it.isAlive }.forEach { hero ->
-                hero.healUp(hpToRestore)
-                println("${dealer.fancyName} healed ${hero.fancyName} to ${hero.currentHp}")
-            }
+            skirmish.getAllyTeam(dealer)
+                .getCharacters()
+                .filter { it.isAlive }
+                .forEach { hero ->
+                    hero.healUp(hpToRestore)
+                    println("${dealer.fancyName} healed ${hero.fancyName} to ${hero.currentHp}")
+                }
         }
     }
 
@@ -241,7 +264,7 @@ object Vestal: HeroClass(
     ) {
 
         override fun apply(skirmish: Skirmish, dealer: DungeonCharacter, targetPosition: Position) {
-            val team = skirmish.getAllyTeam(dealer)
+            val team = skirmish.getOpposingTeam(dealer)
             val target = team[targetPosition]
             requireNotNull(target) { errorLambda(dealer, targetPosition, this) }
             target.takeDamage(mainEffect.effect.dmg)

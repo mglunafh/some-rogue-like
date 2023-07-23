@@ -26,6 +26,8 @@ class Skirmish(
 
     val deleteCorpses = true
 
+    private var movesHappened = false
+
     init {
         require(heroParty.isAlive) { "At least one character in the party must be alive!" }
         sequenceOfTurns = decideTurnSequence(heroParty, enemyParty)
@@ -55,6 +57,10 @@ class Skirmish(
             return "${heroParty.descriptionBackLineFirst()} --x-- ${enemyParty.descriptionFrontLineFirst()}"
         }
 
+    fun moveHappened() {
+        movesHappened = true
+    }
+
     private fun atStart() {
     }
 
@@ -66,6 +72,10 @@ class Skirmish(
 
     private fun atTurnEnd(): SkirmishStatus {
         removeCorpses()
+        if (movesHappened) {
+            println(battlefield)
+            movesHappened = false
+        }
         return when {
             heroParty.gotWiped -> SkirmishStatus.DEFEAT
             enemyParty.gotWiped -> SkirmishStatus.VICTORY
