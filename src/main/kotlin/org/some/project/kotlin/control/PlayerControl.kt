@@ -68,6 +68,7 @@ object PlayerControl: ControlType() {
                             }
                             val t = party[position]
                             if (t != null) {
+                                // TODO RGL-16: ability may have various reasons why it couldn't be applied (like healing on full hp or out of reach)
                                 if (potentialAbility.canBeUsedUpon(character, t)) {
                                     return AbilityCast(potentialAbility, position)
                                 }

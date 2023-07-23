@@ -7,7 +7,7 @@ import org.some.project.kotlin.abilities.AnyOf
 import org.some.project.kotlin.abilities.BasicEffect
 import org.some.project.kotlin.abilities.Damage
 import org.some.project.kotlin.abilities.Position
-import org.some.project.kotlin.abilities.TargetCriteria
+import org.some.project.kotlin.abilities.TargetCriteria.Companion.allEnemies
 import org.some.project.kotlin.abilities.TargetCriteria.Companion.anyEnemy
 import org.some.project.kotlin.scenes.Skirmish
 
@@ -41,20 +41,22 @@ object Brigand: EnemyClass(
         mainEffect = AbilityEffect(
             effect = Damage(4),
             appliedFrom = AnyOf.FRONT_THREE,
-            appliedTo = anyEnemy(Position.FRONTLINE_THREE))
+            appliedTo = allEnemies(Position.FRONTLINE_TWO)
+        )
     ) {
 
         override fun apply(skirmish: Skirmish, dealer: DungeonCharacter, targetPosition: Position) {
-            val criteria = Crusader.ShowThemTheBills.mainEffect.appliedTo.forPosition
+            val team = skirmish.getOpposingTeam(dealer)
+            val criteria = mainEffect.appliedTo.forPosition
             val targetPositions = (criteria as AllOnPositions).positions
-            require(targetPositions.any { skirmish.heroParty[it] != null }) {
+            val damage = mainEffect.effect.dmg
+            require(targetPositions.any { team[it] != null }) {
                 "Fix the target validation please:" +
                         " ${dealer.fancyName} tries to hit empty positions $targetPositions" +
                         " with ${this.fancyName}"
             }
-            targetPositions.forEach {
-                val target = skirmish.heroParty[it]
-                val damage = (mainEffect.effect as Damage).dmg
+            targetPositions.forEach { pos ->
+                val target = team[pos]
                 target?.also {
                     println("${dealer.fancyName} hit ${it.fancyName} for $damage")
                 }?.takeDamage(damage)
@@ -72,7 +74,8 @@ object Brigand: EnemyClass(
     ) {
 
         override fun apply(skirmish: Skirmish, dealer: DungeonCharacter, targetPosition: Position) {
-            val target = skirmish.heroParty[targetPosition]
+            val team = skirmish.getOpposingTeam(dealer)
+            val target = team[targetPosition]
             requireNotNull(target) { errorLambda(dealer, targetPosition, this) }
             val damage = mainEffect.effect.dmg
             target.takeDamage(damage)
@@ -100,7 +103,8 @@ object BoneSoldier: EnemyClass(
     ) {
 
         override fun apply(skirmish: Skirmish, dealer: DungeonCharacter, targetPosition: Position) {
-            val target = skirmish.heroParty[targetPosition]
+            val team = skirmish.getOpposingTeam(dealer)
+            val target = team[targetPosition]
             requireNotNull(target) { errorLambda(dealer, targetPosition, this) }
             val damage = mainEffect.effect.dmg
             target.takeDamage(damage)
@@ -119,7 +123,8 @@ object BoneSoldier: EnemyClass(
     ) {
 
         override fun apply(skirmish: Skirmish, dealer: DungeonCharacter, targetPosition: Position) {
-            val target = skirmish.heroParty[targetPosition]
+            val team = skirmish.getOpposingTeam(dealer)
+            val target = team[targetPosition]
             requireNotNull(target) { errorLambda(dealer, targetPosition, this) }
             val damage = GraveyardSlash.mainEffect.effect.dmg
             target.takeDamage(mainEffect.effect.dmg)
@@ -147,7 +152,8 @@ object Spider: EnemyClass(
     ) {
 
         override fun apply(skirmish: Skirmish, dealer: DungeonCharacter, targetPosition: Position) {
-            val target = skirmish.heroParty[targetPosition]
+            val team = skirmish.getOpposingTeam(dealer)
+            val target = team[targetPosition]
             requireNotNull(target) { errorLambda(dealer, targetPosition, this) }
             val damage = mainEffect.effect.dmg
             target.takeDamage(damage)
@@ -165,7 +171,8 @@ object Spider: EnemyClass(
     ) {
 
         override fun apply(skirmish: Skirmish, dealer: DungeonCharacter, targetPosition: Position) {
-            val target = skirmish.heroParty[targetPosition]
+            val team = skirmish.getOpposingTeam(dealer)
+            val target = team[targetPosition]
             requireNotNull(target) { errorLambda(dealer, targetPosition, this) }
             val damage = mainEffect.effect.dmg
             target.takeDamage(damage)

@@ -12,8 +12,8 @@ import java.util.LinkedList
 import java.util.Queue
 
 class Skirmish(
-    val heroParty: Party<HeroCharacter>,
-    val enemyParty: Party<EnemyCharacter>
+    private val heroParty: Party<HeroCharacter>,
+    private val enemyParty: Party<EnemyCharacter>
 ) {
 
     var round: Int = 1
@@ -127,13 +127,11 @@ class Skirmish(
 
             var tempCollection = mutableListOf<Triple<Int, DungeonCharacter, ControlType>>()
             heroParty.getCharacters()
-                .filterNotNull()
                 .filter { it.isAlive }
                 .forEach {
-                    tempCollection.add(Triple(it.speed, it, PlayerControl))       // <- switch to PlayerControl
+                    tempCollection.add(Triple(it.speed, it, PlayerControl))
                 }
             enemyParty.getCharacters()
-                .filterNotNull()
                 .filter { it.isAlive }
                 .forEach {
                     tempCollection.add(Triple(it.speed, it, ComputerControl))

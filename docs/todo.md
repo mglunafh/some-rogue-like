@@ -1,8 +1,9 @@
 # TO-DO list
 
-`[next item]`: RGL-16 
+`[next item]`: RGL-17 
 
 * add ability criteria for the caster (related to RGL-10)
+* RGL-16 checks if an ability could be applied should return some results, not he the simple boolean  
 * ability should return some results of its application 
     (this should help with the correct sequence of the events during the ability cast)
 * **RGL-15** add description and/or help to the abilities, at least in javadoc
@@ -15,11 +16,11 @@
 # In Progress
 
 * RGL-13 add move back / move forward to the characters (and the party)
-* RGL-14 remove nullable party characters
 
 ----
 # Implemented 
 
+* RGL-14 removed nullable party characters
 * RGL-12 implemented friend recognition system (DungeonCharacter 'team' property / helpful methods in Skirmish)
 * RGL-11 Remove dead characters from the battlefield
 * RGL-10 Created criteria classes for the main target of the ability

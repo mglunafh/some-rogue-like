@@ -10,6 +10,7 @@ import org.some.project.kotlin.scenes.Skirmish
 object ComputerControl: ControlType() {
 
     override fun getAbility(skirmish: Skirmish, character: DungeonCharacter): AbilityCast<BasicEffect> {
+        Thread.sleep(500)
         val applicableAbilities = character.abilities.filter { it.canBeUsedFrom(character.pos) }.shuffled()
         if (applicableAbilities.isEmpty()) {
             print("cannot use anything. ")
@@ -30,7 +31,7 @@ object ComputerControl: ControlType() {
                 skirmish.getAllyTeam(character)
             }
 
-            val targets = party.getCharacters().filterNotNull().shuffled()
+            val targets = party.getCharacters().shuffled()
             targets.forEach { target ->
                 if (criteria.isApplicable(character, target)) {
                     return AbilityCast(ability, target.pos)

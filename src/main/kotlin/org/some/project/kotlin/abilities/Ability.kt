@@ -9,10 +9,8 @@ import org.some.project.kotlin.abilities.Position.Companion.THREE
 import org.some.project.kotlin.abilities.Position.Companion.TWO
 import org.some.project.kotlin.abilities.Position.Companion.ZERO
 import org.some.project.kotlin.chars.DungeonCharacter
-import org.some.project.kotlin.chars.Party
 import org.some.project.kotlin.control.CommandName
 import org.some.project.kotlin.scenes.Skirmish
-import java.lang.IllegalStateException
 
 abstract class Ability<out E: BasicEffect>(
     val name: String,
@@ -35,22 +33,10 @@ abstract class Ability<out E: BasicEffect>(
     override val commandName: String
         get() = name.lowercase().replace(" ", "-")
 
-    fun <T: DungeonCharacter> isPresentOnPositions(party: Party<T>, positions: List<Position>): Boolean {
-        return party.isPresentOnAny(positions)
-    }
-
-    fun <T: DungeonCharacter> isPresentOnPositions(party: Party<T>, appliedTo: AppliedTo): Boolean {
-        return when (appliedTo) {
-            is AllOf -> party.isPresentOnAny(appliedTo.positions)
-            is AnyOf -> party.isPresentOnAny(appliedTo.positions)
-        }
-    }
-
     companion object {
         fun <E: BasicEffect> errorLambda(dealer: DungeonCharacter, pos: Position, ability: Ability<E>) : String =
             "Fix the target validation please:" +
                     " ${dealer.fancyName} tries to hit the empty position $pos with ${ability.fancyName}"
-
     }
 }
 
@@ -119,6 +105,9 @@ value class Position private constructor(val pos: Int) {
         val FRONTLINE_THREE = listOf(ZERO, ONE, TWO)
         val ALL_FOUR = listOf(ZERO, ONE, TWO, THREE)
 
+        /**
+         * Positions from the user's perspective start from 1
+         */
         fun convert(arg: String): MyResult<Position> {
             return when (val t = arg.toIntOrNull()) {
                 null -> MyResult.failure("Could not parse position")
@@ -127,13 +116,13 @@ value class Position private constructor(val pos: Int) {
             }
         }
 
-        fun fromInt(number: Int): Position {
+        /**
+         * Positions internally are 0-based numbers.
+         */
+        internal fun fromInt(number: Int): Position {
             return when {
-                number == 0 -> ZERO
-                number == 1 -> ONE
-                number == 2 -> TWO
-                number == 3 -> THREE
-                number < MAX_POSITION -> throw IllegalStateException("Somehow position for '$number' hasn't been defined")
+                number < 0 -> throw IllegalStateException("Position must not be negative, got '$number' instead")
+                number in 0 until MAX_POSITION -> Position(number)
                 else -> throw IllegalStateException("Number $number cannot represent a valid position from 0 to $MAX_POSITION")
             }
         }

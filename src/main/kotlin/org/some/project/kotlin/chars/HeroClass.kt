@@ -60,7 +60,8 @@ object Crusader: HeroClass(
         ) {
 
         override fun apply(skirmish: Skirmish, dealer: DungeonCharacter, targetPosition: Position) {
-            val target = skirmish.enemyParty[targetPosition]
+            val team = skirmish.getOpposingTeam(dealer)
+            val target = team[targetPosition]
             requireNotNull(target) { errorLambda(dealer, targetPosition, this) }
             val damage = mainEffect.effect.dmg
             target.takeDamage(damage)
@@ -84,7 +85,8 @@ object Crusader: HeroClass(
 
 
         override fun apply(skirmish: Skirmish, dealer: DungeonCharacter, targetPosition: Position) {
-            val target = skirmish.enemyParty[targetPosition]
+            val team = skirmish.getOpposingTeam(dealer)
+            val target = team[targetPosition]
             requireNotNull(target) { errorLambda(dealer, targetPosition, this) }
             val damage = Smite.mainEffect.effect.dmg
             target.takeDamage(damage)
@@ -102,15 +104,16 @@ object Crusader: HeroClass(
     ) {
 
         override fun apply(skirmish: Skirmish, dealer: DungeonCharacter, targetPosition: Position) {
+            val team = skirmish.getOpposingTeam(dealer)
             val criteria = mainEffect.appliedTo.forPosition
             val targetPositions = (criteria as AllOnPositions).positions
-            require(targetPositions.any { skirmish.enemyParty[it] != null }) {
+            require(targetPositions.any { team[it] != null }) {
                 "Fix the target validation please:" +
                         " ${dealer.fancyName} tries to hit empty positions $targetPositions" +
                         " with ${this.fancyName}"
             }
-            targetPositions.forEach {
-                val target = skirmish.enemyParty[it]
+            targetPositions.forEach { pos ->
+                val target = team[pos]
                 val damage = mainEffect.effect.dmg
                 target?.also {
                     println("${dealer.fancyName} hit ${it.fancyName} for $damage")
@@ -142,7 +145,8 @@ object Highwayman: HeroClass(
 
 
         override fun apply(skirmish: Skirmish, dealer: DungeonCharacter, targetPosition: Position) {
-            val target = skirmish.enemyParty[targetPosition]
+            val team = skirmish.getOpposingTeam(dealer)
+            val target = team[targetPosition]
             requireNotNull(target) { errorLambda(dealer, targetPosition, this) }
             val damage = mainEffect.effect.dmg
             target.takeDamage(damage)
@@ -164,7 +168,8 @@ object Highwayman: HeroClass(
             require(dealer.pos == ZERO) {
                 "$fancyName must be applied from the first position, got ${dealer.pos} instead"
             }
-            val target = skirmish.enemyParty[targetPosition]
+            val team = skirmish.getOpposingTeam(dealer)
+            val target = team[targetPosition]
             requireNotNull(target) { errorLambda(dealer, targetPosition, this) }
             val damage = mainEffect.effect.dmg
             target.takeDamage(damage)
@@ -195,7 +200,8 @@ object Vestal: HeroClass(
         }
 
         override fun apply(skirmish: Skirmish, dealer: DungeonCharacter, targetPosition: Position) {
-            val target = skirmish.heroParty[targetPosition]
+            val team = skirmish.getAllyTeam(dealer)
+            val target = team[targetPosition]
             requireNotNull(target) { errorLambda(dealer, targetPosition, this) }
             if (!target.isAlive) {
                 println("Sorry, ${dealer.fancyName} cannot heal a dead person.")
@@ -203,7 +209,7 @@ object Vestal: HeroClass(
             }
             val hpToRestore = mainEffect.effect.heal
             target.healUp(hpToRestore)
-            println("${dealer.fancyName} heal up to $hpToRestore to ${target.fancyName}'s health")
+            println("${dealer.fancyName} healed up to $hpToRestore to ${target.fancyName}'s health")
         }
     }
 
@@ -217,8 +223,8 @@ object Vestal: HeroClass(
 
         override fun apply(skirmish: Skirmish, dealer: DungeonCharacter, targetPosition: Position) {
             val hpToRestore = mainEffect.effect.heal
-            skirmish.heroParty.getCharacters()
-                .filterNotNull().filter { it.isAlive }.forEach { hero ->
+            skirmish.getAllyTeam(dealer).getCharacters()
+                .filter { it.isAlive }.forEach { hero ->
                 hero.healUp(hpToRestore)
                 println("${dealer.fancyName} healed ${hero.fancyName} to ${hero.currentHp}")
             }
@@ -235,7 +241,8 @@ object Vestal: HeroClass(
     ) {
 
         override fun apply(skirmish: Skirmish, dealer: DungeonCharacter, targetPosition: Position) {
-            val target = skirmish.enemyParty[targetPosition]
+            val team = skirmish.getAllyTeam(dealer)
+            val target = team[targetPosition]
             requireNotNull(target) { errorLambda(dealer, targetPosition, this) }
             target.takeDamage(mainEffect.effect.dmg)
         }
