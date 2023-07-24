@@ -164,6 +164,11 @@ object Highwayman: HeroClass(
             skirmish.getAllyTeam(dealer).moveForward(dealer.pos, moveForward.effect.amount)
             skirmish.moveHappened()
         }
+
+        override val description: String
+            get() = "Hits ${mainEffect.appliedTo.forPosition.fancyName}. " +
+                    "Can be used from ${mainEffect.appliedFrom.positions}. " +
+                    "Moves forward for ${moveForward.effect.amount}."
     }
 
     object PointBlackShot: Ability<Damage>(
@@ -197,6 +202,11 @@ object Highwayman: HeroClass(
             skirmish.getAllyTeam(dealer).moveBack(dealer.pos, recoilSelfBack.effect.amount)
             skirmish.moveHappened()
         }
+
+        override val description: String
+            get() = "Hits ${mainEffect.appliedTo.forPosition.fancyName}. " +
+                    "Can be used from ${mainEffect.appliedFrom.positions}. " +
+                    "Moves back for ${recoilSelfBack.effect.amount}."
     }
 }
 

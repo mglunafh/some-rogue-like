@@ -1,5 +1,6 @@
 package org.some.project.kotlin.abilities
 
+import org.some.project.kotlin.FancyName
 import org.some.project.kotlin.abilities.Position.Companion.ALL_FOUR
 import org.some.project.kotlin.chars.DungeonCharacter
 import java.lang.IllegalArgumentException
@@ -68,10 +69,16 @@ object Enemy: CharacterCriterion
 
 data class HasHpLessThan(val threshold: Int): CharacterCriterion
 
-sealed interface PositionCriterion: Criterion
+sealed interface PositionCriterion: Criterion, FancyName
 
-data class OnPosition(val position: Position): PositionCriterion
+data class OnPosition(val position: Position): PositionCriterion {
+    override val fancyName: String = "position $position"
+}
 
-data class AllOnPositions(val positions: List<Position>): PositionCriterion
+data class AllOnPositions(val positions: List<Position>): PositionCriterion {
+    override val fancyName: String = "all on positions ${positions.joinToString()}"
+}
 
-data class AnyOnPositions(val positions: List<Position>): PositionCriterion
+data class AnyOnPositions(val positions: List<Position>): PositionCriterion {
+    override val fancyName: String = "any on positions ${positions.joinToString()}"
+}

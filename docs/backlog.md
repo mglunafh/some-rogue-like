@@ -1,6 +1,6 @@
 # A list of high-level concepts which would be cool to have
 
-* Internationalization/localization/ Language support: english, russian, interslavic
+* Internationalization / localization / Language support: english, russian, interslavic
 * Character core personality traits system
   * Big 5 personality traits
   * Actions and interpersonal dynamics based on personality traits

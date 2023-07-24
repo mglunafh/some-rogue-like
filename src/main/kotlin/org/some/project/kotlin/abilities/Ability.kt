@@ -33,6 +33,19 @@ abstract class Ability<out E: BasicEffect>(
     override val commandName: String
         get() = name.lowercase().replace(" ", "-")
 
+    override val description: String
+        get() {
+            val verb =  when (val t = mainEffect.effect) {
+                is Damage -> "Hits"
+                is Healing -> "Heals"
+                is Stun -> "Stuns"
+                else -> TODO("Description not defined for ${t.javaClass}")
+            }
+            val targets = mainEffect.appliedTo.forPosition.fancyName
+            val canBeUsed = mainEffect.appliedFrom.positions
+            return "$verb $targets. Can be used from positions $canBeUsed"
+        }
+
     companion object {
         fun <E: BasicEffect> errorLambda(dealer: DungeonCharacter, pos: Position, ability: Ability<E>) : String =
             "Fix the target validation please:" +
@@ -49,6 +62,8 @@ object PassTurn: Ability<PassEffect>(
     override fun apply(skirmish: Skirmish, dealer: DungeonCharacter, targetPosition: Position) {
         println("${dealer.fancyName} passes a turn.")
     }
+
+    override val description: String = "Passes a turn."
 }
 
 sealed class AppliedTo(positions: Set<Position>) {

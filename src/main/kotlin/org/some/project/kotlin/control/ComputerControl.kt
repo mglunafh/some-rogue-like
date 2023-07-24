@@ -27,7 +27,6 @@ object ComputerControl: ControlType() {
         }
 
         applicableAbilities.forEach { ability ->
-            // TODO RGL-15: Add help
             if (!ability.needsTarget) {
                 return AbilityCast(ability, character.pos)
             }

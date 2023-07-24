@@ -44,7 +44,7 @@ object PlayerControl: ControlType() {
                 in listOf("p", "pass") -> {
                     return AbilityCast(PassTurn, character.pos)
                 }
-                // TODO RGL-15
+                // TODO RGL-18
                 in listOf("h", "help") -> {
                     print("Sorry, help is not implemented yet, go figure out yourself:> ")
                     continue
@@ -52,6 +52,11 @@ object PlayerControl: ControlType() {
 
                 in lookUpAbilities -> {
                     val potentialAbility = lookUpAbilities.getValue(abilityInput)
+                    if (args.getOrNull(1) in listOf("h", "help")) {
+                        println(potentialAbility.description)
+                        print(":> ")
+                        continue
+                    }
                     if (potentialAbility !in applicableAbilities) {
                         print("Ability ${potentialAbility.fancyName} cannot be used, use another one: > ")
                         continue
@@ -59,7 +64,6 @@ object PlayerControl: ControlType() {
                     if (!potentialAbility.needsTarget) {
                         return AbilityCast(potentialAbility, character.pos)
                     }
-                    // TODO RGL-15: add help for the ability
                     if (args.size <= 1) {
                         print("Ability ${potentialAbility.fancyName} needs a target, please specify with target: > ")
                         continue

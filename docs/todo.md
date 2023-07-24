@@ -1,25 +1,26 @@
 # TO-DO list
 
-`[next item]`: RGL-18 
+`[next item]`: **RGL-20** 
 
+* **RGL-18** 'help', 'exit help', 'pass help' do not work in Skirmish
 * move ability code to its basic effects (probably requires RGL-16 and RGL-17)
-* RGL-16 checks if an ability could be applied should return some results, not the simple boolean  
-* RGL-17 ability should return some results of its application 
+* **RGL-16** checks if an ability could be applied should return some results, not the simple boolean  
+* **RGL-17** ability should return some results of its application 
     (this should help with the correct sequence of the events during the ability cast)
-* add ability criteria for the caster (related to RGL-10)
 * create the system of commands
 * **RGL-9** try to do typed characters
 * **RGL-7** Abstract out the console output (View)
-* **RGL-8** create document with overall description and entities (Ability-related)
+* **RGL-8** create (Ability-related) document with overall description and entities
 
 ----
 # In Progress
 
-* **RGL-15** add description and/or help to the abilities, at least in javadoc
+* RGL-19 add ability criteria for the caster (related to RGL-10)
 
 ----
 # Implemented 
 
+* RGL-15 added description and help for the abilities
 * RGL-13 added "move back", "move forward" ability effects.
 * RGL-14 removed nullable party characters
 * RGL-12 implemented friend recognition system (DungeonCharacter 'team' property / helpful methods in Skirmish)
